@@ -67,7 +67,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="loadDelegate">Delegat, der nicht geladene ChunkColumns nachläd.</param>
         /// <param name="saveDelegate">Delegat, der nicht mehr benötigte ChunkColumns abspeichert.</param>
-        public GlobalChunkCache(Func<int, Index2, IChunkColumn> loadDelegate,Func<int,IPlanet> loadPlanetDelegate,
+        public GlobalChunkCache(Func<int, Index2, IChunkColumn> loadDelegate, Func<int, IPlanet> loadPlanetDelegate,
             Action<int, Index2, IChunkColumn> saveDelegate)
         {
             if (loadDelegate == null) throw new ArgumentNullException("loadDelegate");
@@ -82,7 +82,8 @@ namespace OctoAwesome
             newchunks = new Queue<CacheItem>();
             oldchunks = new Queue<CacheItem>();
 
-            cleanupThread = new Thread(BackgroundCleanup) {
+            cleanupThread = new Thread(BackgroundCleanup)
+            {
                 IsBackground = true,
                 Priority = ThreadPriority.Lowest
             };
@@ -95,7 +96,7 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <returns></returns>
-        public IChunkColumn Subscribe(int planet, Index2 position,bool passive)
+        public IChunkColumn Subscribe(int planet, Index2 position, bool passive)
         {
             CacheItem cacheItem = null;
 
@@ -127,7 +128,7 @@ namespace OctoAwesome
                     cacheItem.PassiveReference++;
                 else
                     cacheItem.References++;
-                
+
             }
 
             lock (cacheItem)
@@ -145,7 +146,7 @@ namespace OctoAwesome
 
             return cacheItem.ChunkColumn;
         }
-        
+
         public bool IsChunkLoaded(int planet, Index2 position)
         {
             return cache.ContainsKey(new Index3(position, planet));
@@ -187,7 +188,7 @@ namespace OctoAwesome
                     value.PassiveReference = 0;
                     _unreferencedItems.Enqueue(value);
                 }
-                
+
             }
             _autoResetEvent.Set();
         }
@@ -197,7 +198,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        public void Release(int planet, Index2 position,bool passive)
+        public void Release(int planet, Index2 position, bool passive)
         {
             CacheItem cacheItem = null;
             lock (lockObject)
@@ -250,7 +251,7 @@ namespace OctoAwesome
                     {
                         saveDelegate(item.Planet, item.Index, item.ChunkColumn);
                     }
-                    
+
                 }
 
                 while (_unreferencedItems.TryDequeue(out ci))
@@ -275,7 +276,7 @@ namespace OctoAwesome
             }
         }
 
-        
+
 
         /// <summary>
         /// Gibt einen Planenten anhand seiner ID zurück
@@ -321,8 +322,8 @@ namespace OctoAwesome
             {
                 var failchunkentities = (from chunk in cache
                                          where chunk.Value.ChunkColumn != null
-                                        from entity in chunk.Value.ChunkColumn.Entities.FailChunkEntity()
-                                        select entity).ToArray();
+                                         from entity in chunk.Value.ChunkColumn.Entities.FailChunkEntity()
+                                         select entity).ToArray();
                 foreach (var entity in failchunkentities)
                 {
                     var currentchunk = Peek(entity.CurrentPlanet, entity.CurrentChunk);
@@ -360,7 +361,7 @@ namespace OctoAwesome
             /// Die Zahl der Subscriber, die das Item Abboniert hat.
             /// </summary>
             public int References { get; set; }
-            
+
             public int PassiveReference { get; set; }
 
             /// <summary>
@@ -376,7 +377,7 @@ namespace OctoAwesome
 
                     _chunkColumn = value;
 
-                    if(value != null)
+                    if (value != null)
                         value.Changed += OnChanged;
                 }
             }
@@ -386,7 +387,7 @@ namespace OctoAwesome
             {
                 Changed?.Invoke(this);
             }
-            
+
         }
     }
 }

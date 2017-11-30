@@ -162,7 +162,7 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void AddEntity(Entity entity)
         {
-            //TODO: Überprüfen ob ENtity schon da ist
+            //TODO: Überprüfen ob Entity schon da ist
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 

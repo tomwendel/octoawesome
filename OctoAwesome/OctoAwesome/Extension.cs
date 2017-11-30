@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
-    //TODO:Eventuell auslagern
+    //TODO: Eventuell auslagern
 
     public sealed class Extension : IExtension
     {

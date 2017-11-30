@@ -10,9 +10,11 @@ namespace OctoAwesome.Basics
     {
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
-            Index3 size = new Index3(12, 12, 3);
-            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed);
-            planet.Generator = this;
+            Index3 size = new Index3(4, 4, 3);
+            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed)
+            {
+                Generator = this
+            };
             return planet;
         }
 
@@ -72,7 +74,7 @@ namespace OctoAwesome.Basics
                                 if (obersteSchicht > 0)
                                 {
                                     float temp = localPlanet.ClimateMap.GetTemperature(new Index3(index.X * Chunk.CHUNKSIZE_X + x, index.Y * Chunk.CHUNKSIZE_Y + y, i * Chunk.CHUNKSIZE_Z + z));
-
+                                    
                                     if ((ozeanSurface || surfaceBlock) && (absoluteZ <= (localPlanet.BiomeGenerator.SeaLevel + 2)) && (absoluteZ >= (localPlanet.BiomeGenerator.SeaLevel - 2)))
                                     {
                                         chunks[i].SetBlock(x, y, z, sandIndex);

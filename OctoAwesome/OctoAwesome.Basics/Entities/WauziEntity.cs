@@ -27,6 +27,8 @@ namespace OctoAwesome.Basics.Entities
             BodyPowerComponent body = Components.GetComponent<BodyPowerComponent>();
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.MoveInput = new Vector2(0.5f, 0.5f) ;
+
+            var collisionComponent = Components.GetComponent<BoxCollisionComponent>();
             
             if (JumpTime <= 0)
             {

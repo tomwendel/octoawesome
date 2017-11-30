@@ -8,7 +8,7 @@ using OctoAwesome.EntityComponents;
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(MoveableComponent), typeof(PositionComponent))]
-    public sealed class MoveComponent : SimulationComponent<MoveableComponent,PositionComponent>
+    public sealed class MoveComponent : SimulationComponent<MoveableComponent, PositionComponent>
     {
         protected override bool AddEntity(Entity entity)
         {
@@ -24,23 +24,22 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
         }
 
-        protected override void UpdateEntity(GameTime gameTime,Entity e, MoveableComponent movecomp, PositionComponent poscomp)
+        protected override void UpdateEntity(GameTime gameTime, Entity e, MoveableComponent movecomp, PositionComponent poscomp)
         {
 
             if (e.Id == 0)
                 return;
 
-            //TODO:Sehr unschön
-            
+            //TODO: Sehr unschön
             if (e.Components.ContainsComponent<BoxCollisionComponent>())
             {
-                CheckBoxCollision(gameTime,e,movecomp,poscomp);
+                CheckBoxCollision(gameTime, e, movecomp, poscomp);
             }
             
-
             var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
             var result = e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
+
             if (result)
                 poscomp.Position = newposition;
 
@@ -52,9 +51,10 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
         }
 
-        private void CheckBoxCollision(GameTime gameTime,Entity e,MoveableComponent movecomp,PositionComponent poscomp)
+        private void CheckBoxCollision(GameTime gameTime, Entity e, MoveableComponent movecomp, PositionComponent poscomp)
         {
             BodyComponent bc = new BodyComponent();
+
             if (e.Components.ContainsComponent<BodyComponent>())
                 bc = e.Components.GetComponent<BodyComponent>();
 
@@ -66,7 +66,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             //Blocks finden die eine Kollision verursachen könnten
             int minx = (int)Math.Floor(Math.Min(
                 position.BlockPosition.X - bc.Radius,
-                position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));            
+                position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));
             int maxx = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.X + bc.Radius,
                 position.BlockPosition.X + bc.Radius + movecomp.PositionMove.X));
@@ -102,8 +102,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         if (block == 0)
                             continue;
 
-
-
+                        
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, movecomp.Velocity).ToList();
 
                         var planes = from pp in playerplanes
@@ -115,7 +114,6 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         foreach (var plane in planes)
                         {
-
                             var subvelocity = (plane.Distance / (float)gameTime.ElapsedGameTime.TotalSeconds);
                             var diff = movecomp.Velocity - subvelocity;
 
@@ -139,7 +137,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 vz = movecomp.Velocity.Z;
 
                             movecomp.Velocity = new Vector3(vx, vy, vz);
-
+                            
                             if (vx == 0 && vy == 0 && vz == 0)
                             {
                                 abort = true;
