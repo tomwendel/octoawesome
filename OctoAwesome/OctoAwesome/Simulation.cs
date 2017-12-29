@@ -122,7 +122,7 @@ namespace OctoAwesome
                 ResourceManager.GlobalChunkCache.BeforSimulationUpdate(this);
 
                 //Update all Entities
-                foreach (var entity in Entities.OfType<UpdateableEntity>())
+                foreach (var entity in entites.OfType<UpdateableEntity>())
                     entity.Update(gameTime);
 
                 // Update all Components
@@ -143,9 +143,11 @@ namespace OctoAwesome
 
             State = SimulationState.Paused;
 
-            //TODO: unschön
             while (entites.Count > 0)
-                RemoveEntity(Entities.First());       
+            {
+                var entitie = entites.First();
+                RemoveEntity(entitie);
+            }
 
             State = SimulationState.Finished;
             // thread.Join();
