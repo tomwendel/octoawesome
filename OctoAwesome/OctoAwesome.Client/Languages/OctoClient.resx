@@ -281,4 +281,7 @@
   <data name="Up" xml:space="preserve">
     <value>Up</value>
   </data>
+  <data name="Planet" xml:space="preserve">
+    <value>Planet</value>
+  </data>
 </root>

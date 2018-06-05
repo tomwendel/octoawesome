@@ -14,7 +14,7 @@ namespace OctoAwesome
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         bool SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null);
-        
+
         /// <summary>
         /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
@@ -101,7 +101,7 @@ namespace OctoAwesome
         int GetBlockMeta(Index3 index);
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
         /// </summary>
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
@@ -110,10 +110,18 @@ namespace OctoAwesome
         void SetBlockMeta(int x, int y, int z, int meta);
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="meta">Die neuen Metadaten</param>
         void SetBlockMeta(Index3 index, int meta);
+
+        /// <summary>
+        /// Gibt das Höhenniveua der angegebenen Position zurück.
+        /// </summary>
+        /// <param name="x">Globale X-Koordinate in Blöcken.</param>
+        /// <param name="y">Globale Y-Koordinate in Blöcken.</param>
+        /// <returns>Git die Höhe in Blöcken zurück, oder -1 falls der zugehörige Chunk nicht geladen ist.</returns>
+        int GroundLevel(int x, int y);
     }
 }

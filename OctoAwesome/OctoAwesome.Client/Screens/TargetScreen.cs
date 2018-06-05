@@ -10,7 +10,7 @@ namespace OctoAwesome.Client.Screens
     {
         private AssetComponent assets;
 
-        public TargetScreen(ScreenComponent manager, Action<int, int> tp, int x, int y) : base(manager)
+        public TargetScreen(ScreenComponent manager, Action<Coordinate> tp, Coordinate position) : base(manager)
         {
             assets = manager.Game.Assets;
 
@@ -43,6 +43,23 @@ namespace OctoAwesome.Client.Screens
             vstack.Orientation = Orientation.Vertical;
             spanel.Controls.Add(vstack);
 
+            StackPanel pStack = new StackPanel(manager);
+            pStack.Orientation = Orientation.Horizontal;
+            vstack.Controls.Add(pStack);
+
+            Label pLabel = new Label(manager);
+            pLabel.Text = Languages.OctoClient.Planet + ":";
+            pStack.Controls.Add(pLabel);
+
+            Textbox pText = new Textbox(manager)
+            {
+                Background = new BorderBrush(Color.Gray),
+                Width = 150,
+                Margin = new Border(2, 10, 2, 10),
+                Text = position.Planet.ToString()
+            };
+            pStack.Controls.Add(pText);
+
             StackPanel xStack = new StackPanel(manager);
             xStack.Orientation = Orientation.Horizontal;
             vstack.Controls.Add(xStack);
@@ -56,7 +73,7 @@ namespace OctoAwesome.Client.Screens
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
                 Margin = new Border(2, 10, 2, 10),
-                Text = x.ToString()
+                Text = position.GlobalBlockIndex.X.ToString()
             };
             xStack.Controls.Add(xText);
 
@@ -73,7 +90,7 @@ namespace OctoAwesome.Client.Screens
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
                 Margin = new Border(2, 10, 2, 10),
-                Text = y.ToString()
+                Text = position.GlobalBlockIndex.Y.ToString()
             };
             yStack.Controls.Add(yText);
 
@@ -81,10 +98,22 @@ namespace OctoAwesome.Client.Screens
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             closeButton.LeftMouseClick += (s, e) =>
             {
-                if (tp != null)
-                    tp(int.Parse(xText.Text), int.Parse(yText.Text));
-                else
-                    manager.NavigateBack();
+                int planet = int.Parse(pText.Text);
+                int x = int.Parse(xText.Text);
+                int y = int.Parse(yText.Text);
+
+                var c = new LocalChunkCache(manager.Game.ResourceManager.GlobalChunkCache, false, 2, 1);
+                c.SetCenter(planet, new Index2(x, y), (b) =>
+                {
+                    var gl = c.GroundLevel(x, y);
+                    c.Flush();
+
+                    var coordinate = new Coordinate(planet, new Index3(x, y, gl + 2), new Vector3());
+                    if (tp != null)
+                        tp(coordinate);
+                    else
+                        manager.NavigateBack();
+                });
             };
             spanel.Controls.Add(closeButton);
 

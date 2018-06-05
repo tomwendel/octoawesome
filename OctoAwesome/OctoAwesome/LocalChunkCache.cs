@@ -80,7 +80,7 @@ namespace OctoAwesome
         /// <param name="planetid">ID des Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        public bool SetCenter(int planetid, Index2 index, Action<bool> successCallback = null) 
+        public bool SetCenter(int planetid, Index2 index, Action<bool> successCallback = null)
             => SetCenter(globalCache.GetPlanet(planetid), index, successCallback);
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Chunk Index</param>
         /// <returns>Instanz des Chunks</returns>
-        public IChunk GetChunk(Index3 index) 
+        public IChunk GetChunk(Index3 index)
             => GetChunk(index.X, index.Y, index.Z);
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block Index</param>
         /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
-        public ushort GetBlock(Index3 index) 
+        public ushort GetBlock(Index3 index)
             => GetBlock(index.X, index.Y, index.Z);
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Die neue Block-ID.</param>
-        public void SetBlock(Index3 index, ushort block) 
+        public void SetBlock(Index3 index, ushort block)
             => SetBlock(index.X, index.Y, index.Z, block);
 
         /// <summary>
@@ -310,11 +310,11 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
-        public int GetBlockMeta(Index3 index) 
+        public int GetBlockMeta(Index3 index)
             => GetBlockMeta(index.X, index.Y, index.Z);
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
         /// </summary>
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
@@ -329,7 +329,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="meta">Die neuen Metadaten</param>
@@ -354,15 +354,37 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt einen falchen Index um auf das Array <see cref="chunkColumns"/> zu zu greiffen
+        /// Gibt einen flachen Index um auf das Array <see cref="chunkColumns"/> zu zu greiffen
         /// </summary>
         /// <param name="x">Die X-Koordinate</param>
         /// <param name="y">Die Y-Koordinate</param>
         /// <returns>Der Abgeflachte index</returns>
-        private int FlatIndex(int x, int y) 
+        private int FlatIndex(int x, int y)
             => (((y & (mask)) << limit) | ((x & (mask))));
 
-        public IPlanet LoadPlanet(int id) 
+        public IPlanet LoadPlanet(int id)
             => globalCache.GetPlanet(id);
+
+        /// <summary>
+        /// Gibt das Höhenniveua der angegebenen Position zurück.
+        /// </summary>
+        /// <param name="x">Globale X-Koordinate in Blöcken.</param>
+        /// <param name="y">Globale Y-Koordinate in Blöcken.</param>
+        /// <returns>Git die Höhe in Blöcken zurück, oder -1 falls der zugehörige Chunk nicht geladen ist.</returns>
+        public int GroundLevel(int x, int y)
+        {
+            if (Planet == null)
+                return -1;
+
+            x = Index2.NormalizeAxis(x, Planet.Size.X);
+            y = Index2.NormalizeAxis(y, Planet.Size.Y);
+
+            IChunkColumn column = chunkColumns[FlatIndex(x >> Chunk.LimitX, y >> Chunk.LimitY)];
+
+            if (column == null)
+                return -1;
+
+            return column.Heights[(x & (Chunk.CHUNKSIZE_X - 1)), (y & (Chunk.CHUNKSIZE_Y - 1))];
+        }
     }
 }
