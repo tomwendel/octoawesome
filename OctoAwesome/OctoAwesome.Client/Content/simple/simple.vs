@@ -7,6 +7,7 @@ in uint inputData2;
 out vec3 psNormal;
 out vec2 psTexcoord;
 flat out uint psTexIndex;
+out float psLightLevel;
 
 void main()
 {
@@ -17,7 +18,7 @@ void main()
 	psNormal = normalLookup[(inputData2 >> 24) & 0xF];
 	psTexIndex = (inputData1>>24);
 	psTexcoord = uvLookup[(inputData2 >> 28) & 0xF];
-	
+	psLightLevel = float(inputData2 & 0xFFFFFF) / float(0xFFFFFF);
 
 	gl_Position = WorldViewProj*position;
 

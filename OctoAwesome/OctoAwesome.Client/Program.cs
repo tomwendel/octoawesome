@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 #endregion
 
 namespace OctoAwesome.Client
@@ -37,7 +38,7 @@ namespace OctoAwesome.Client
                     logger.Fatal($"Unhandled Exception: {e.ExceptionObject}", e.ExceptionObject as Exception);
                     logger.Flush();
                 };
-
+                ThreadPool.SetMaxThreads(500000, 200);
                 using (game = new OctoGame())
                     game.Run(60, 60);
             }

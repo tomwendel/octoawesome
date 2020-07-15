@@ -13,17 +13,17 @@ namespace OctoAwesome
         /// Zweierpotenz der Chunkgrösse. Ausserdem gibt es die Anzahl Bits an,
         /// die die X-Koordinate im Array <see cref="Blocks"/> verwendet.
         /// </summary>
-        public const int LimitX = 5;
+        public const int LimitX = 4;
         /// <summary>
         /// Zweierpotenz der Chunkgrösse. Ausserdem gibt es die Anzahl Bits an,
         /// die die Y-Koordinate im Array <see cref="Blocks"/> verwendet.
         /// </summary>
-        public const int LimitY = 5;
+        public const int LimitY = 4;
         /// <summary>
         /// Zweierpotenz der Chunkgrösse. Ausserdem gibt es die Anzahl Bits an,
         /// die die Z-Koordinate im Array <see cref="Blocks"/> verwendet.
         /// </summary>
-        public const int LimitZ = 5;
+        public const int LimitZ = 4;
 
         /// <summary>
         /// Größe eines Chunks in Blocks in X-Richtung.

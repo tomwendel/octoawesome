@@ -104,6 +104,27 @@ namespace OctoAwesome.Client.Controls
             assets = manager.Game.Assets;
             entities = manager.Game.Entity;
             Manager = manager;
+            manager.Game.KeyMapper.RegisterBinding("octoawesome:switchRasterizerState", "Rasterizer Toggle");
+            manager.Game.KeyMapper.AddAction("octoawesome:switchRasterizerState", (s) =>
+            {
+                if (s == KeyMapper.KeyType.Up)
+                    ChunkRenderer.rastState.FillMode = ChunkRenderer.rastState.FillMode == PolygonMode.Fill ? PolygonMode.Line : PolygonMode.Fill;
+            });
+            manager.Game.KeyMapper.AddKey("octoawesome:switchRasterizerState", engenious.Input.Keys.J);
+            manager.Game.KeyMapper.RegisterBinding("octoawesome:switchAmbientOcclusion", "AmbientOcclusion Toggle");
+            manager.Game.KeyMapper.AddAction("octoawesome:switchAmbientOcclusion", (s) =>
+            {
+                if (s == KeyMapper.KeyType.Up)
+                {
+                    ChunkRenderer.AmbientOcclusion = !ChunkRenderer.AmbientOcclusion;
+                    foreach (var item in chunkRenderer)
+                    {
+                        item.RegenerateVertexBuffer();
+                    }
+                }
+            });
+            manager.Game.KeyMapper.AddKey("octoawesome:switchAmbientOcclusion", engenious.Input.Keys.O);
+
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");

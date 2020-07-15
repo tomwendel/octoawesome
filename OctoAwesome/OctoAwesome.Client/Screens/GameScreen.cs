@@ -92,14 +92,14 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 1f);
-            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-1f, 0f);
-            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -1f);
-            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(1f, 0f);
-            if (pressedHeadUp) Manager.Player.HeadInput += new Vector2(0f, 1f);
-            if (pressedHeadDown) Manager.Player.HeadInput += new Vector2(0f, -1f);
-            if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
-            if (pressedHeadRight) Manager.Player.HeadInput += new Vector2(1f, 0f);
+            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 10f);
+            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-10f, 0f);
+            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -10f);
+            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(10f, 0f);
+            if (pressedHeadUp) Manager.Player.HeadInput += new Vector2(0f, 10f);
+            if (pressedHeadDown) Manager.Player.HeadInput += new Vector2(0f, -10f);
+            if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-10f, 0f);
+            if (pressedHeadRight) Manager.Player.HeadInput += new Vector2(10f, 0f);
 
             HandleGamePad();
 

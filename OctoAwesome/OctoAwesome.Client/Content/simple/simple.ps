@@ -9,12 +9,13 @@ uniform sampler2DArray BlockTextures;
 in vec3 psNormal;
 in vec2 psTexcoord;
 flat in uint psTexIndex;
+in float psLightLevel;
 
 out vec4 outColor;
 void main()
 {
-	vec4 texColor = texture(BlockTextures,vec3(psTexcoord,psTexIndex));
-	vec4 ambient = AmbientColor * AmbientIntensity;
-	vec4 diffuse = clamp(dot(-DiffuseDirection,psNormal),0.0,1.0) * DiffuseColor * DiffuseIntensity;
-	outColor = texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
+	vec4 texColor=texture(BlockTextures,vec3(psTexcoord,psTexIndex));
+	vec4 ambient=AmbientColor*AmbientIntensity*psLightLevel;
+	vec4 diffuse=clamp(dot(-DiffuseDirection,psNormal),0.,1.)*DiffuseColor*DiffuseIntensity;
+	outColor=texColor*clamp(ambient+vec4(diffuse.rgb,1.),0.,1.);
 }

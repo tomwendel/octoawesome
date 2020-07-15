@@ -5,28 +5,28 @@ namespace OctoAwesome
     public enum Wall
     {
         /// <summary>
-        /// Top
+        /// Top +Z
         /// </summary>
         Top,
         /// <summary>
-        /// Bottom
+        /// Bottom -Z
         /// </summary>
         Bottom,
         /// <summary>
-        /// West
+        /// West -X
         /// </summary>
         Left,
         /// <summary>
-        /// East
+        /// East +X
         /// </summary>
         Right,
         /// <summary>
-        /// North
+        /// North +Y
         /// </summary>
         Back,
         /// <summary>
-        /// South
+        /// South -Y, 
         /// </summary>
-        Front 
+        Front
     }
 }
