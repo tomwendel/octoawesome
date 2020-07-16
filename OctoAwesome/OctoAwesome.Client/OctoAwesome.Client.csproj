@@ -55,7 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.4.0.6-alpha" />
+    <PackageReference Include="engenious" Version="0.4.0.11-alpha" />
     <PackageReference Include="engenious.ContentTool" Version="0.4.0.3-alpha" />
     <PackageReference Include="engenious.UI" Version="0.4.0-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

@@ -41,6 +41,8 @@ namespace OctoAwesome
         /// </summary>
         public virtual bool HasMetaData => false;
 
+        private static readonly BoundingBox[] defaultBoundingBoxes = new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+
         /// <summary>
         /// Liefert die Physikalischen Paramerter, wie härte, dichte und bruchzähigkeit
         /// </summary>
@@ -67,7 +69,7 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>Ein Array von Kollisionsboxen</returns>
         public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
-            => new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+            => defaultBoundingBoxes;
 
         public virtual int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
 

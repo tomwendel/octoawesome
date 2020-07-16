@@ -450,15 +450,6 @@ namespace OctoAwesome.Client.Controls
                         planet.Size.X,
                         planet.Size.Y));
 
-                BoundingBox chunkBox = new BoundingBox(
-                new Vector3(
-                    shift.X * Chunk.CHUNKSIZE_X,
-                    shift.Y * Chunk.CHUNKSIZE_Y,
-                    shift.Z * Chunk.CHUNKSIZE_Z),
-                new Vector3(
-                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 int range = 3;
                 if (shift.X >= -range && shift.X <= range &&

@@ -405,34 +405,15 @@ namespace OctoAwesome.Client.Components
                 var wertXZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 2, (((2 * 3) + 1) * 3) + 2, Wall.Left, (((2 * 3) + 0) * 3) + 1, Wall.Front);
 
                 var vertYZ = new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 1, z + 1),
-                        new Vector3(0, 0, 1),
-                        uvOffsets[(6 + rotation) % 4],
-                        top,
-                        AmbientToBrightness(wertYZ)
-                        );
+                        new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 0, 1), uvOffsets[(6 + rotation) % 4], top, AmbientToBrightness(wertYZ));
 
                 var vertXYZ = new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 1, z + 1),
-                        new Vector3(0, 0, 1),
-                        uvOffsets[(7 + rotation) % 4],
-                        top,
-                       AmbientToBrightness(wertXYZ)
-                        );
+                        new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 0, 1), uvOffsets[(7 + rotation) % 4], top, AmbientToBrightness(wertXYZ));
                 var vertZ = new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 0, z + 1),
-                        new Vector3(0, 0, 1),
-                        uvOffsets[(5 + rotation) % 4],
-                        top,
-                        AmbientToBrightness(wertZ)
-                        );
+                        new Vector3(x + 0, y + 0, z + 1), new Vector3(0, 0, 1), uvOffsets[(5 + rotation) % 4], top, AmbientToBrightness(wertZ));
 
                 var vertXZ = new VertexPositionNormalTextureLight(
-                    new Vector3(x + 1, y + 0, z + 1),
-                    new Vector3(0, 0, 1),
-                    uvOffsets[(4 + rotation) % 4],
-                    top,
-                    AmbientToBrightness(wertXZ));
+                    new Vector3(x + 1, y + 0, z + 1), new Vector3(0, 0, 1), uvOffsets[(4 + rotation) % 4], top, AmbientToBrightness(wertXZ));
 
                 if (wertXYZ + wertZ <= wertYZ + wertXZ)
                 {
@@ -457,37 +438,34 @@ namespace OctoAwesome.Client.Components
                 var bottom = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Bottom, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Bottom, _manager, globalX, globalY, globalZ);
 
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 1, z + 0),
-                        new Vector3(0, 0, -1),
-                        uvOffsets[(6 + rotation) % 4],
-                        bottom,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 2, (((0 * 3) + 2) * 3) + 1, Wall.Left, (((0 * 3) + 1) * 3) + 2, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 1, z + 0),
-                        new Vector3(0, 0, -1),
-                        uvOffsets[(7 + rotation) % 4],
-                        bottom,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 0, (((0 * 3) + 1) * 3) + 0, Wall.Right, (((0 * 3) + 2) * 3) + 1, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 0, z + 0),
-                        new Vector3(0, 0, -1),
-                        uvOffsets[(5 + rotation) % 4],
-                        bottom,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 2, (((0 * 3) + 1) * 3) + 2, Wall.Left, (((0 * 3) + 0) * 3) + 1, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 0, z + 0),
-                        new Vector3(0, 0, -1),
-                        uvOffsets[(4 + rotation) % 4],
-                        bottom,
-                       AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 0, (((0 * 3) + 1) * 3) + 0, Wall.Right, (((0 * 3) + 0) * 3) + 1, Wall.Front))));
+                var wertY = VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 0, (((0 * 3) + 1) * 3) + 0, Wall.Right, (((0 * 3) + 2) * 3) + 1, Wall.Back);
+                var wertXY = VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 2, (((0 * 3) + 2) * 3) + 1, Wall.Left, (((0 * 3) + 1) * 3) + 2, Wall.Back);
+                var wert = VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 0, (((0 * 3) + 1) * 3) + 0, Wall.Right, (((0 * 3) + 0) * 3) + 1, Wall.Front);
+                var wertX = VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 2, (((0 * 3) + 1) * 3) + 2, Wall.Left, (((0 * 3) + 0) * 3) + 1, Wall.Front);
+                var vertXY = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(6 + rotation) % 4], bottom, AmbientToBrightness(wertXY));
+                var vertY = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(7 + rotation) % 4], bottom, AmbientToBrightness(wertY));
+                var vertX = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(5 + rotation) % 4], bottom, AmbientToBrightness(wertX));
+                var vert = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(4 + rotation) % 4], bottom, AmbientToBrightness(wert));
+
+                if (wert + wertXY <= wertY + wertX)
+                {
+                    vertices.Add(vertY);
+                    vertices.Add(vert);
+                    vertices.Add(vertXY);
+                    vertices.Add(vertX);
+                }
+                else
+                {
+                    vertices.Add(vertXY);
+                    vertices.Add(vertY);
+                    vertices.Add(vertX);
+                    vertices.Add(vert);
+                }
             }
-
-
 
             // South
             if (southBlock == 0 || (!southBlockDefintion.IsSolidWall(Wall.Front) && southBlock != block))
@@ -496,34 +474,35 @@ namespace OctoAwesome.Client.Components
 
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Front, _manager, globalX, globalY, globalZ);
 
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 1, z + 0),
-                        new Vector3(0, 1, 0),
-                        uvOffsets[(6 + rotation) % 4],
-                        front,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 0, (((1 * 3) + 2) * 3) + 0, Wall.Right, (((0 * 3) + 2) * 3) + 1, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 1, z + 0),
-                        new Vector3(0, 1, 0),
-                        uvOffsets[(7 + rotation) % 4],
-                        front,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 2, (((1 * 3) + 2) * 3) + 2, Wall.Left, (((0 * 3) + 2) * 3) + 1, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 1, z + 1),
-                        new Vector3(0, 1, 0),
-                        uvOffsets[(5 + rotation) % 4],
-                        front,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 0, (((1 * 3) + 2) * 3) + 0, Wall.Right, (((2 * 3) + 2) * 3) + 1, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 1, z + 1),
-                        new Vector3(0, 1, 0),
-                        uvOffsets[(4 + rotation) % 4],
-                        front,
-                        AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 2, (((2 * 3) + 2) * 3) + 1, Wall.Left, (((1 * 3) + 2) * 3) + 2, Wall.Back))));
+                var wertY = VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 0, (((1 * 3) + 2) * 3) + 0, Wall.Right, (((0 * 3) + 2) * 3) + 1, Wall.Front);
+                var wertXY = VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 2, (((1 * 3) + 2) * 3) + 2, Wall.Left, (((0 * 3) + 2) * 3) + 1, Wall.Front);
+                var wertYZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 0, (((1 * 3) + 2) * 3) + 0, Wall.Right, (((2 * 3) + 2) * 3) + 1, Wall.Back);
+                var wertXYZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 2, (((2 * 3) + 2) * 3) + 1, Wall.Left, (((1 * 3) + 2) * 3) + 2, Wall.Back);
+
+                var vertY = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(6 + rotation) % 4], front, AmbientToBrightness(wertY));
+                var vertXY = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(7 + rotation) % 4], front, AmbientToBrightness(wertXY));
+                var vertYZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(5 + rotation) % 4], front, AmbientToBrightness(wertYZ));
+                var vertXYZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(4 + rotation) % 4], front, AmbientToBrightness(wertXYZ));
+
+
+                if (wertY + wertXYZ >= wertYZ + wertXY)
+                {
+                    vertices.Add(vertY);
+                    vertices.Add(vertXY);
+                    vertices.Add(vertYZ);
+                    vertices.Add(vertXYZ);
+                }
+                else
+                {
+                    vertices.Add(vertXY);
+                    vertices.Add(vertXYZ);
+                    vertices.Add(vertY);
+                    vertices.Add(vertYZ);
+                }
             }
 
             // North
@@ -532,34 +511,36 @@ namespace OctoAwesome.Client.Components
                 var back = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Back, _manager, globalX, globalY, globalZ));
 
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Back, _manager, globalX, globalY, globalZ);
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 0, z + 1),
-                        new Vector3(0, -1, 0),
-                        uvOffsets[(4 + rotation) % 4],
-                        back,
-                    AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((2 * 3) + 0) * 3) + 1, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 0, z + 1),
-                        new Vector3(0, -1, 0),
-                        uvOffsets[(5 + rotation) % 4],
-                        back,
-                    AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 2, (((2 * 3) + 0) * 3) + 1, Wall.Left, (((1 * 3) + 0) * 3) + 2, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 0, z + 0),
-                        new Vector3(0, -1, 0),
-                        uvOffsets[(7 + rotation) % 4],
-                        back,
-                    AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((0 * 3) + 0) * 3) + 1, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 0, z + 0),
-                        new Vector3(0, -1, 0),
-                        uvOffsets[(6 + rotation) % 4],
-                        back,
-                    AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 2, (((1 * 3) + 0) * 3) + 2, Wall.Left, (((0 * 3) + 0) * 3) + 1, Wall.Front))));
+
+                var wertZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((2 * 3) + 0) * 3) + 1, Wall.Back);
+                var wertXZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 2, (((2 * 3) + 0) * 3) + 1, Wall.Left, (((1 * 3) + 0) * 3) + 2, Wall.Back);
+                var wert = VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((0 * 3) + 0) * 3) + 1, Wall.Front);
+                var wertX = VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 2, (((1 * 3) + 0) * 3) + 2, Wall.Left, (((0 * 3) + 0) * 3) + 1, Wall.Front);
+
+
+                var vertZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(4 + rotation) % 4], back, AmbientToBrightness(wertZ));
+                var vertXZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(5 + rotation) % 4], back, AmbientToBrightness(wertXZ));
+                var vert = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(7 + rotation) % 4], back, AmbientToBrightness(wert));
+                var vertX = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(6 + rotation) % 4], back, AmbientToBrightness(wertX));
+
+                if (wert + wertXZ <= wertZ + wertX)
+                {
+                    vertices.Add(vertZ);
+                    vertices.Add(vertXZ);
+                    vertices.Add(vert);
+                    vertices.Add(vertX);
+                }
+                else
+                {
+                    vertices.Add(vertXZ);
+                    vertices.Add(vertX);
+                    vertices.Add(vertZ);
+                    vertices.Add(vert);
+                }
             }
 
 
@@ -570,34 +551,36 @@ namespace OctoAwesome.Client.Components
 
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Left, _manager, globalX, globalY, globalZ);
 
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 1, z + 0),
-                        new Vector3(-1, 0, 0),
-                        uvOffsets[(7 + rotation) % 4],
-                        left,
-                       AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 0, (((1 * 3) + 2) * 3) + 0, Wall.Left, (((0 * 3) + 1) * 3) + 0, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 1, z + 1),
-                        new Vector3(-1, 0, 0),
-                        uvOffsets[(4 + rotation) % 4],
-                        left,
-                       AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 0, (((2 * 3) + 1) * 3) + 0, Wall.Left, (((1 * 3) + 2) * 3) + 0, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 0, z + 0),
-                        new Vector3(-1, 0, 0),
-                        uvOffsets[(6 + rotation) % 4],
-                        left,
-                     AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((0 * 3) + 1) * 3) + 0, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 0, y + 0, z + 1),
-                        new Vector3(-1, 0, 0),
-                        uvOffsets[(5 + rotation) % 4],
-                        left,
-                      AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((2 * 3) + 1) * 3) + 0, Wall.Back))));
+                var wertY = VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 0, (((1 * 3) + 2) * 3) + 0, Wall.Left, (((0 * 3) + 1) * 3) + 0, Wall.Front);
+                var wertYZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 0, (((2 * 3) + 1) * 3) + 0, Wall.Left, (((1 * 3) + 2) * 3) + 0, Wall.Back);
+                var wert = VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((0 * 3) + 1) * 3) + 0, Wall.Front);
+                var wertZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 0, (((1 * 3) + 0) * 3) + 0, Wall.Right, (((2 * 3) + 1) * 3) + 0, Wall.Back);
+
+                var vertY = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 1, z + 0), new Vector3(-1, 0, 0), uvOffsets[(7 + rotation) % 4], left, AmbientToBrightness(wertY));
+                var vertYZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 1, z + 1), new Vector3(-1, 0, 0), uvOffsets[(4 + rotation) % 4], left, AmbientToBrightness(wertYZ));
+                var vert = new VertexPositionNormalTextureLight(
+                       new Vector3(x + 0, y + 0, z + 0), new Vector3(-1, 0, 0), uvOffsets[(6 + rotation) % 4], left, AmbientToBrightness(wert));
+                var vertZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 0, y + 0, z + 1), new Vector3(-1, 0, 0), uvOffsets[(5 + rotation) % 4], left, AmbientToBrightness(wertZ));
+
+                if (wert + wertYZ <= wertZ + wertY)
+                {
+                    vertices.Add(vertY);
+                    vertices.Add(vertYZ);
+                    vertices.Add(vert);
+                    vertices.Add(vertZ);
+                }
+                else
+                {
+                    vertices.Add(vertYZ);
+                    vertices.Add(vertZ);
+                    vertices.Add(vertY);
+                    vertices.Add(vert);
+                }
+
+          
             }
 
 
@@ -608,34 +591,35 @@ namespace OctoAwesome.Client.Components
 
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Right, _manager, globalX, globalY, globalZ);
 
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 1, z + 1),
-                        new Vector3(1, 0, 0),
-                        uvOffsets[(5 + rotation) % 4],
-                        right,
-                     AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 2, (((2 * 3) + 1) * 3) + 2, Wall.Left, (((1 * 3) + 2) * 3) + 2, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 1, z + 0),
-                        new Vector3(1, 0, 0),
-                        uvOffsets[(6 + rotation) % 4],
-                        right,
-                      AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 2, (((1 * 3) + 2) * 3) + 2, Wall.Left, (((0 * 3) + 1) * 3) + 2, Wall.Front))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 0, z + 1),
-                        new Vector3(1, 0, 0),
-                        uvOffsets[(4 + rotation) % 4],
-                        right,
-                      AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 2, (((1 * 3) + 0) * 3) + 2, Wall.Right, (((2 * 3) + 1) * 3) + 2, Wall.Back))));
-                vertices.Add(
-                    new VertexPositionNormalTextureLight(
-                        new Vector3(x + 1, y + 0, z + 0),
-                        new Vector3(1, 0, 0),
-                        uvOffsets[(7 + rotation) % 4],
-                        right,
-                      AmbientToBrightness(VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 2, (((1 * 3) + 0) * 3) + 2, Wall.Right, (((0 * 3) + 1) * 3) + 2, Wall.Front))));
+                var wertXYZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 2) * 3) + 2, (((2 * 3) + 1) * 3) + 2, Wall.Left, (((1 * 3) + 2) * 3) + 2, Wall.Back);
+                var wertXY = VertexAO(blockDefinitions, blocks, (((0 * 3) + 2) * 3) + 2, (((1 * 3) + 2) * 3) + 2, Wall.Left, (((0 * 3) + 1) * 3) + 2, Wall.Front);
+                var wertXZ = VertexAO(blockDefinitions, blocks, (((2 * 3) + 0) * 3) + 2, (((1 * 3) + 0) * 3) + 2, Wall.Right, (((2 * 3) + 1) * 3) + 2, Wall.Back);
+                var wertX = VertexAO(blockDefinitions, blocks, (((0 * 3) + 0) * 3) + 2, (((1 * 3) + 0) * 3) + 2, Wall.Right, (((0 * 3) + 1) * 3) + 2, Wall.Front);
+
+                var vertXYZ = new VertexPositionNormalTextureLight(
+                      new Vector3(x + 1, y + 1, z + 1), new Vector3(1, 0, 0), uvOffsets[(5 + rotation) % 4], right, AmbientToBrightness(wertXYZ));
+                var vertXY = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 1, z + 0), new Vector3(1, 0, 0), uvOffsets[(6 + rotation) % 4], right, AmbientToBrightness(wertXY));
+                var vertXZ = new VertexPositionNormalTextureLight(
+                        new Vector3(x + 1, y + 0, z + 1), new Vector3(1, 0, 0), uvOffsets[(4 + rotation) % 4], right, AmbientToBrightness(wertXZ));
+                var vertX = new VertexPositionNormalTextureLight(
+                       new Vector3(x + 1, y + 0, z + 0), new Vector3(1, 0, 0), uvOffsets[(7 + rotation) % 4], right, AmbientToBrightness(wertX));
+
+                if (wertX + wertXYZ >= wertXZ + wertXY)
+                {
+                    vertices.Add(vertXYZ);
+                    vertices.Add(vertXY);
+                    vertices.Add(vertXZ);
+                    vertices.Add(vertX);
+                }
+                else
+                {
+                    vertices.Add(vertXY);
+                    vertices.Add(vertX);
+                    vertices.Add(vertXYZ);
+                    vertices.Add(vertXZ);
+                }
+              
             }
         }
 
