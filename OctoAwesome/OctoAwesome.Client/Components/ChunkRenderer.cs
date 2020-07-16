@@ -5,6 +5,7 @@ using OctoAwesome.Client.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
@@ -30,6 +31,12 @@ namespace OctoAwesome.Client.Components
         private int vertexCount;
         private int indexCount;
         private ILocalChunkCache _manager;
+        private readonly int textureColumns;
+        private readonly float textureWidth;
+        private readonly float textureGap;
+        private readonly ReadOnlyDictionary<IBlockDefinition, int> textureOffsets;
+        int definitionIndex = 0;
+
 
         private readonly SceneControl _sceneControl;
         private readonly IDefinitionManager definitionManager;
@@ -65,6 +72,22 @@ namespace OctoAwesome.Client.Components
             dispatcher = Dispatcher.CurrentDispatcher;
             simple = simpleShader;
             GenerateIndexBuffer();
+            textureColumns = textures.Width / SceneControl.TEXTURESIZE;
+            textureWidth = 1f / textureColumns;
+            var texelSize = 1f / SceneControl.TEXTURESIZE;
+            textureGap = texelSize / 2;
+            // BlockTypes sammlen
+            // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
+            var definitionIndex = 0;
+            var localTextureOffsets = new Dictionary<IBlockDefinition, int>();
+            foreach (var definition in definitionManager.GetBlockDefinitions())
+            {
+                int textureCount = definition.Textures.Count();
+                localTextureOffsets.Add(definition, definitionIndex);
+                // definitionMapping.Add(definition.GetBlockType(), definition);
+                definitionIndex += textureCount;
+            }
+            textureOffsets = new ReadOnlyDictionary<IBlockDefinition, int>(localTextureOffsets);
         }
 
         public void SetChunk(ILocalChunkCache manager, int x, int y, int z)
@@ -180,7 +203,6 @@ namespace OctoAwesome.Client.Components
                 return false;
             }
 
-
             // Chunk nachladen
             if (this.chunk == null)
             {
@@ -195,29 +217,15 @@ namespace OctoAwesome.Client.Components
 
                 this.chunk.Changed += OnChunkChanged;
             }
+
+            var vertices = new List<VertexPositionNormalTextureLight>();
+
             var chunk = this.chunk;
-            List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>();
-            List<int> index = new List<int>();
-            int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
-            float textureWidth = 1f / textureColumns;
-            float texelSize = 1f / SceneControl.TEXTURESIZE;
-            float textureSizeGap = texelSize;
-            float textureGap = texelSize / 2;
-            var blockDefinitions = new IBlockDefinition[27];
-            // BlockTypes sammlen
-            Dictionary<IBlockDefinition, int> textureOffsets = new Dictionary<IBlockDefinition, int>();
-            // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
-            int definitionIndex = 0;
-            foreach (var definition in definitionManager.GetBlockDefinitions())
-            {
-                int textureCount = definition.Textures.Count();
-                textureOffsets.Add(definition, definitionIndex);
-                // definitionMapping.Add(definition.GetBlockType(), definition);
-                definitionIndex += textureCount;
-            }
+
+            IBlockDefinition[] blockDefinitions = new IBlockDefinition[27];
 
             Vector2[] uvOffsets = new[]
-            {
+                {
                 new Vector2(0, 0),
                 new Vector2(1, 0),
                 new Vector2(1, 1),
@@ -230,7 +238,7 @@ namespace OctoAwesome.Client.Components
                 {
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     {
-                        GenerateVertices(chunk, vertices, textureColumns, textureWidth, textureGap, uvOffsets, z, y, x, textureOffsets, chunkPos, blockDefinitions, true);
+                        GenerateVertices(chunk, vertices, uvOffsets, z, y, x, chunkPos, blockDefinitions, true);
                     }
                 }
             }
@@ -240,7 +248,7 @@ namespace OctoAwesome.Client.Components
                 {
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     {
-                        GenerateVertices(chunk, vertices, textureColumns, textureWidth, textureGap, uvOffsets, z, y, x, textureOffsets, chunkPos, blockDefinitions, true);
+                        GenerateVertices(chunk, vertices,  uvOffsets, z, y, x, chunkPos, blockDefinitions, true);
                     }
                 }
             }
@@ -250,7 +258,7 @@ namespace OctoAwesome.Client.Components
                 {
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x += Chunk.CHUNKSIZE_X - 1)
                     {
-                        GenerateVertices(chunk, vertices, textureColumns, textureWidth, textureGap, uvOffsets, z, y, x, textureOffsets, chunkPos, blockDefinitions, true);
+                        GenerateVertices(chunk, vertices,  uvOffsets, z, y, x, chunkPos, blockDefinitions, true);
                     }
                 }
             }
@@ -261,7 +269,7 @@ namespace OctoAwesome.Client.Components
                 {
                     for (int x = 1; x < Chunk.CHUNKSIZE_X - 1; x++)
                     {
-                        GenerateVertices(chunk, vertices, textureColumns, textureWidth, textureGap, uvOffsets, z, y, x, textureOffsets, chunkPos, blockDefinitions, false);
+                        GenerateVertices(chunk, vertices,  uvOffsets, z, y, x,  chunkPos, blockDefinitions, false);
                     }
                 }
             }
@@ -306,7 +314,7 @@ namespace OctoAwesome.Client.Components
             return AmbientOcclusion ? (0xFFFFFF / 2) + (0xFFFFFF / 6 * ambient) : (0xFFFFFF);
         }
 
-        private unsafe void GenerateVertices(IChunk chunk, List<VertexPositionNormalTextureLight> vertices, int textureColumns, float textureWidth, float textureGap, Vector2[] uvOffsets, int z, int y, int x, Dictionary<IBlockDefinition, int> textureOffsets, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
+        private unsafe void GenerateVertices(IChunk chunk, List<VertexPositionNormalTextureLight> vertices, Vector2[] uvOffsets, int z, int y, int x, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
         {
             // Textur-Koordinate "berechnen"
             ushort block = chunk.GetBlock(x, y, z);
@@ -580,7 +588,7 @@ namespace OctoAwesome.Client.Components
                     vertices.Add(vert);
                 }
 
-          
+
             }
 
 
@@ -619,7 +627,7 @@ namespace OctoAwesome.Client.Components
                     vertices.Add(vertXYZ);
                     vertices.Add(vertXZ);
                 }
-              
+
             }
         }
 

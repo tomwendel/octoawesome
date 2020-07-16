@@ -270,10 +270,10 @@ namespace OctoAwesome
             //TODO: Überarbeiten
             using (semaphore.Wait())
             {
-                FailEntityChunkArgs[] failChunkEntities = cache
+                var failChunkEntities = cache
                     .Where(chunk => chunk.Value.ChunkColumn != null)
                     .SelectMany(chunk => chunk.Value.ChunkColumn.FailChunkEntity())
-                    .ToArray();
+                    .ToList();
 
                 foreach (FailEntityChunkArgs entity in failChunkEntities)
                 {
