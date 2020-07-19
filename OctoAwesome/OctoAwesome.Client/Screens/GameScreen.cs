@@ -27,6 +27,7 @@ namespace OctoAwesome.Client.Screens
         private readonly MinimapControl minimap;
         private readonly CrosshairControl crosshair;
         private readonly HealthBarControl healthbar;
+        private readonly ChatControl chat;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -37,7 +38,7 @@ namespace OctoAwesome.Client.Screens
 
             scene = new SceneControl(manager);
             scene.HorizontalAlignment = HorizontalAlignment.Stretch;
-            scene.VerticalAlignment = VerticalAlignment.Stretch;            
+            scene.VerticalAlignment = VerticalAlignment.Stretch;
             Controls.Add(scene);
 
             debug = new DebugControl(manager);
@@ -84,6 +85,24 @@ namespace OctoAwesome.Client.Screens
             crosshair.Width = 8;
             crosshair.Height = 8;
             Controls.Add(crosshair);
+
+            chat = new ChatControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 200,
+                Width = 500,
+                Visible = false
+            };
+            Controls.Add(chat);
+            chat.OnMessage += (message) =>
+            {
+                // Do whatever you want with the message here:
+                if (message.StartsWith("/"))
+                    chat.AddTextMessage($"Command: {message}");
+                else
+                    chat.AddTextMessage(message);
+            };
 
             Title = Languages.OctoClient.Game;
 
@@ -281,10 +300,16 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:teleport", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
-                        Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
-                        Manager.NavigateBack();
-                    }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
+                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) =>
+                {
+                    Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
+                    Manager.NavigateBack();
+                }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
+            });
+            Manager.Game.KeyMapper.AddAction("octoawesome:toggle_chat", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+                chat.Visible = true;
             });
         }
 
@@ -348,7 +373,7 @@ namespace OctoAwesome.Client.Screens
                 pressedGamepadInventory = gamePadState.Buttons.Back == ButtonState.Pressed;
             }
         }
-              
+
         #endregion
     }
 }

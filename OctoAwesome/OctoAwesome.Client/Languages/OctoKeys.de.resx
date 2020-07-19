@@ -207,4 +207,7 @@
   <data name="teleport" xml:space="preserve">
     <value>Teleportieren</value>
   </data>
+  <data name="toggle_chat" xml:space="preserve">
+    <value>Chat öffnen/schließen</value>
+  </data>
 </root>

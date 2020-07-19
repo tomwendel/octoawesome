@@ -329,5 +329,16 @@ namespace OctoAwesome.Client.Languages {
                 return ResourceManager.GetString("teleport", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die toggle_chat ähnelt.
+        /// </summary>
+        internal static string toggle_chat
+        {
+            get
+            {
+                return ResourceManager.GetString("toggle_chat", resourceCulture);
+            }
+        }
     }
 }

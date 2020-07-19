@@ -185,6 +185,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:freemouse", Languages.OctoKeys.freemouse);
             KeyMapper.RegisterBinding("octoawesome:fullscreen", Languages.OctoKeys.fullscreen);
             KeyMapper.RegisterBinding("octoawesome:teleport", Languages.OctoKeys.teleport);
+            KeyMapper.RegisterBinding("octoawesome:toggle_chat", Languages.OctoKeys.toggle_chat);
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -217,7 +218,8 @@ namespace OctoAwesome.Client
                 { "octoawesome:exit", Keys.Escape },
                 { "octoawesome:freemouse", Keys.F12 },
                 { "octoawesome:fullscreen", Keys.F11 },
-                { "octoawesome:teleport", Keys.T }
+                { "octoawesome:teleport", Keys.T },
+                { "octoawesome:toggle_chat", Keys.Enter }
             };
 
             KeyMapper.LoadFromConfig(standardKeys);
