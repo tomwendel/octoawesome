@@ -11,9 +11,6 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.1.16" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
