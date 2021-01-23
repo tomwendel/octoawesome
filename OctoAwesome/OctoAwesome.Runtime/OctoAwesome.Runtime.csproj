@@ -15,6 +15,6 @@
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.10-alpha" />
+    <PackageReference Include="engenious" Version="0.5.0.14-alpha" />
   </ItemGroup>
 </Project>

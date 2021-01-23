@@ -25,7 +25,7 @@ namespace OctoAwesome.Client.Components
         public static float OverrideLightLevel { get; set; }
         public static bool WireFrame { get; set; }
 
-        private readonly Effect simple;
+        private readonly simple simple;
         private readonly GraphicsDevice graphicsDevice;
 
         private readonly Texture2DArray textures;
@@ -89,7 +89,7 @@ namespace OctoAwesome.Client.Components
                 };
         }
 
-        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, simple simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
         {
             _sceneControl = sceneControl;
             this.definitionManager = definitionManager;
@@ -180,14 +180,12 @@ namespace OctoAwesome.Client.Components
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
 
-            simple.Parameters["OverrideLightLevel"].SetValue(OverrideLightLevel);
-            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
-            simple.Parameters["BlockTextures"].SetValue(textures);
+            simple.Ambient.OverrideLightLevel = OverrideLightLevel;
+            simple.Ambient.WorldViewProj = worldViewProj;
+            simple.Ambient.BlockTextures = textures;
 
-            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
-            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
-
-
+            simple.Ambient.AmbientIntensity = 0.4f;
+            simple.Ambient.AmbientColor = Color.White.ToVector4();
 
             lock (this)
             {

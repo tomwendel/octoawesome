@@ -53,7 +53,7 @@ namespace OctoAwesome.Client.Controls
         private Task backgroundTask;
         private Task backgroundThread2;
         private ILocalChunkCache localChunkCache;
-        private Effect simpleShader;
+        private simple simpleShader;
 
         private Task[] _additionalRegenerationThreads;
 
@@ -113,7 +113,7 @@ namespace OctoAwesome.Client.Controls
             sphereRadius = tmpSphereRadius - (chunkDiag / 2);
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
-            simpleShader = manager.Game.Content.Load<Effect>("simple");
+            simpleShader = manager.Game.Content.Load<simple>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
