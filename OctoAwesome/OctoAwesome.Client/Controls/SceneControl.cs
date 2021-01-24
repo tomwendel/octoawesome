@@ -433,7 +433,7 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
-            DrawSun();
+            DrawSun(sunDirection);
 
             DrawWorld(camera.Projection, camera.View, chunkOffset, sunDirection);
 
@@ -485,7 +485,7 @@ namespace OctoAwesome.Client.Controls
 
             Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
             DrawChunks(chunkOffset, viewProjC);
-
+            
             entities.SetLightEnvironment(sunDirection);
             entities.Draw(view, projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
         }
@@ -498,25 +498,25 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
             DrawChunksShadow(chunkOffset, viewProjC);
 
-            entities.Draw(view, projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
+            entities.DrawShadow(view, projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
         }
 
-        private void DrawSun()
+        private void DrawSun(Vector3 sunDirection)
         {
             // Draw Sun
-            // GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             
-            //sunEffect.Texture = sunTexture;
-            //Matrix billboard = Matrix.Invert(camera.View);
-            //billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
-            //sunEffect.World = billboard;
-            //sunEffect.View = camera.View;
-            //sunEffect.Projection = camera.Projection;
-            //sunEffect.CurrentTechnique.Passes[0].Apply();
+            sunEffect.CurrentTechnique.Passes[0].Apply();
+            sunEffect.Texture = sunTexture;
+            Matrix billboard = Matrix.Invert(camera.View);
+            billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
+            sunEffect.World = billboard;
+            sunEffect.View = camera.View;
+            sunEffect.Projection = camera.Projection;
 
 
             Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
-            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
+            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 6);
         }
 
         private void DrawSelectionBox(Index3 chunkOffset)
