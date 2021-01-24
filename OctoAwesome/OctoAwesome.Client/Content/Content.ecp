@@ -4,14 +4,27 @@
   <Configuration>Debug</Configuration>
   <OutputDir>bin/{Configuration}/</OutputDir>
   <Contents>
-    <ContentFile>
-      <Name>simple.glsl</Name>
-      <Processor>EffectProcessor</Processor>
-      <Importer>Effect Importer</Importer>
-      <Settings>
-        <CreateUserEffect>True</CreateUserEffect>
-      </Settings>
-    </ContentFile>
+    <ContentFolder>
+      <Name>Shaders</Name>
+      <Contents>
+        <ContentFile>
+          <Name>chunkEffect.glsl</Name>
+          <Processor>EffectProcessor</Processor>
+          <Importer>Effect Importer</Importer>
+          <Settings>
+            <CreateUserEffect>True</CreateUserEffect>
+          </Settings>
+        </ContentFile>
+        <ContentFile>
+          <Name>entityEffect.glsl</Name>
+          <Processor>EffectProcessor</Processor>
+          <Importer>Effect Importer</Importer>
+          <Settings>
+            <CreateUserEffect>True</CreateUserEffect>
+          </Settings>
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
     <ContentFile>
       <Name>texdog.png</Name>
       <Processor>BitmapProcessor</Processor>

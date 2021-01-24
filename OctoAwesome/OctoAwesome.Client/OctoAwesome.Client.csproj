@@ -47,11 +47,6 @@
     <EmbeddedResource Include="Assets\Crew\blackorca.png" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
-    <Content Include="Content\simple.fx" />
-    <Content Include="Content\BoldFont.png" />
-    <Content Include="Content\GameFont.png" />
-    <Content Include="Content\HeadlineFont.png" />
-    <Content Include="Content\Hud.png" />
     <Content Include="Copyright.txt" />
     <None Include="de\LoadingScreenQuotes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

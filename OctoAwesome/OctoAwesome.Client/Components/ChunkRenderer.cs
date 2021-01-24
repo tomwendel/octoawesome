@@ -6,7 +6,6 @@ using engenious;
 using System;
 using System.Threading;
 using OctoAwesome.Threading;
-using engenious.UserDefined;
 using OctoAwesome.Client.Cache;
 using OctoAwesome.Expressions;
 using OctoAwesome.Runtime;
@@ -15,6 +14,7 @@ using OctoAwesome.Serialization;
 using System.Collections.ObjectModel;
 using OctoAwesome.Definitions;
 using engenious.Helper;
+using engenious.UserDefined.Shaders;
 
 namespace OctoAwesome.Client.Components
 {
@@ -25,7 +25,7 @@ namespace OctoAwesome.Client.Components
         public static float OverrideLightLevel { get; set; }
         public static bool WireFrame { get; set; }
 
-        private readonly simple simple;
+        private readonly chunkEffect simple;
         private readonly GraphicsDevice graphicsDevice;
 
         private readonly Texture2DArray textures;
@@ -89,7 +89,7 @@ namespace OctoAwesome.Client.Components
                 };
         }
 
-        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, simple simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, chunkEffect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
         {
             _sceneControl = sceneControl;
             this.definitionManager = definitionManager;
@@ -179,6 +179,8 @@ namespace OctoAwesome.Client.Components
                 shift.X * Chunk.CHUNKSIZE_X,
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
+            
+            simple.Ambient.MainPass.Apply();
 
             simple.Ambient.OverrideLightLevel = OverrideLightLevel;
             simple.Ambient.WorldViewProj = worldViewProj;
@@ -195,7 +197,35 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.RasterizerState = WireFrame ? wireFrameState : RasterizerState.CullCounterClockwise;
                 graphicsDevice.VertexBuffer = VertexBuffer;
 
-                foreach (var pass in simple.CurrentTechnique.Passes)
+                foreach (var pass in simple.Ambient.Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
+                }
+            }
+        }
+        public void DrawShadow(Matrix viewProj, Index3 shift)
+        {
+            if (!Loaded)
+                return;
+
+            Matrix worldViewProj = viewProj * Matrix.CreateTranslation(
+                shift.X * Chunk.CHUNKSIZE_X,
+                shift.Y * Chunk.CHUNKSIZE_Y,
+                shift.Z * Chunk.CHUNKSIZE_Z);
+
+            simple.Shadow.MainPass.Apply();
+            simple.Shadow.DepthWorldViewProj = worldViewProj;
+
+            lock (this)
+            {
+                if (VertexBuffer == null)
+                    return;
+
+                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                graphicsDevice.VertexBuffer = VertexBuffer;
+
+                foreach (var pass in simple.Shadow.Passes)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
