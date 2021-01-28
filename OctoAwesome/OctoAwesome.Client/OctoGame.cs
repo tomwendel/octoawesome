@@ -123,10 +123,10 @@ namespace OctoAwesome.Client
             Components.Add(Entity);
 
             Camera = new CameraComponent(this);
-            Camera.UpdateOrder = 3;
+            Camera.UpdateOrder = 4;
             Components.Add(Camera);
 
-            Simulation.UpdateOrder = 4;
+            Simulation.UpdateOrder = 3;
             Components.Add(Simulation);
 
             #endregion GameComponents
@@ -188,6 +188,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:teleport", Languages.OctoKeys.teleport);
             KeyMapper.RegisterBinding("octoawesome:toggleAmbientOcclusion", Languages.OctoKeys.ambientOcclusion);
             KeyMapper.RegisterBinding("octoawesome:toggleWireFrame", Languages.OctoKeys.wireFrame);
+            KeyMapper.RegisterBinding("octoawesome:freezeLight", Languages.OctoKeys.wireFrame);
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -222,7 +223,8 @@ namespace OctoAwesome.Client
                 { "octoawesome:fullscreen", Keys.F11 },
                 { "octoawesome:teleport", Keys.T },
                 { "octoawesome:toggleAmbientOcclusion", Keys.O },
-                { "octoawesome:toggleWireFrame", Keys.J }
+                { "octoawesome:toggleWireFrame", Keys.J },
+                { "octoawesome:freezeLight", Keys.L }
             };
 
             KeyMapper.LoadFromConfig(standardKeys);

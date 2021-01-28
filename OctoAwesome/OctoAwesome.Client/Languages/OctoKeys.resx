@@ -213,4 +213,7 @@
   <data name="toggleWireFrame" xml:space="preserve">
     <value>Toggle Wireframe</value>
   </data>
+  <data name="freezeLight" xml:space="preserve">
+    <value>Freeze Light</value>
+  </data>
 </root>

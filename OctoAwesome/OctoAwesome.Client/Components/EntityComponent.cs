@@ -76,7 +76,6 @@ namespace OctoAwesome.Client.Components
                 set
                 {
                     texture = value;
-                    Ambient.MainPass.Apply();
                     Ambient.Texture = (Texture2D)texture;
                 }
             }
@@ -109,7 +108,6 @@ namespace OctoAwesome.Client.Components
 
         public void SetLightEnvironment(Vector3 sunDirection)
         {
-            effect.Ambient.MainPass.Apply();
             effect.Ambient.AmbientIntensity = 0.4f;
             effect.Ambient.AmbientColor = Color.White;
             effect.Ambient.DiffuseColor = new Color(190, 190, 190);
@@ -121,7 +119,6 @@ namespace OctoAwesome.Client.Components
         public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
             effect.CurrentTechnique = effect.Ambient;
-            effect.Ambient.MainPass.Apply();
             effect.Ambient.ViewProjection = projection * view;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
             using (var writer = File.AppendText(Path.Combine(".", "render.log")))
@@ -174,9 +171,8 @@ namespace OctoAwesome.Client.Components
         public void DrawShadow(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
             effect.CurrentTechnique = effect.Shadow;
-            effect.Shadow.MainPass.Apply();
             effect.Shadow.ViewProjection = projection * view;
-            graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             using (var writer = File.AppendText(Path.Combine(".", "render.log")))
                 foreach (var entity in Entities)
                 {

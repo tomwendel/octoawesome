@@ -26,7 +26,7 @@ namespace OctoAwesome.Client.Components
         public void RecreateProjection()
         {
             Projection = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
+                MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 1000f);
         }
 
         public override void Update(GameTime gameTime)

@@ -1,5 +1,6 @@
 #version 400
 uniform mat4 WorldViewProj;
+uniform mat4 DepthBiasWorldViewProj;
 
 in uint inputData1;
 in uint inputData2;
@@ -8,6 +9,7 @@ out vec3 psNormal;
 out vec2 psTexcoord;
 flat out uint psTexIndex;
 out float psLightLevel;
+out vec4 shadowCoord;
 
 void main()
 {
@@ -20,5 +22,6 @@ void main()
 	psTexcoord = uvLookup[(inputData2 >> 28) & 0xF];
 	psLightLevel = float(inputData2 & 0xFFFFFF)/float(0xFFFFFF);
 
-	gl_Position = WorldViewProj*position;
+	gl_Position = WorldViewProj * position;
+	shadowCoord = DepthBiasWorldViewProj * position;
 }

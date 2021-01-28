@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.14-alpha" />
+    <PackageReference Include="engenious" Version="0.5.0.22-alpha" />
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
   </ItemGroup>
