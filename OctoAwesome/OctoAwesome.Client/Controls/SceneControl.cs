@@ -452,7 +452,7 @@ namespace OctoAwesome.Client.Controls
             
             // Bounding boxes
             BoundingBox receiverBB = default, casterBB = default, splitBB;
-            Matrix lightViewProjMatrix = Matrix.CreateOrthographic(4096, 4096, 0.1f, 1000) * Matrix.CreateLookAt(light - lightDir*500, light + lightDir*500, Vector3.UnitX); // ; // TODO: use actual light matrix
+            Matrix lightViewProjMatrix = Matrix.CreateOrthographic(ShadowMap.Width, ShadowMap.Height, 0.1f, 100) * Matrix.CreateLookAt(light - lightDir*500, light + lightDir*500, Vector3.UnitX); // ; // TODO: use actual light matrix
             // Merge all bounding boxes of casters into a bigger "casterBB".
             Matrix tmp = lightViewProjMatrix;
             for (int i = 0; i < casters.Length; i++)
