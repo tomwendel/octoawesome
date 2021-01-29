@@ -606,7 +606,7 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.SetRenderTarget(ShadowMap);
             Manager.GraphicsDevice.Clear(ClearBufferMask.DepthBufferBit);
             Manager.GraphicsDevice.BlendState = BlendState.Opaque;
-            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
             DrawWorldShadow(camera.Projection, camera.View, chunkOffset);
 

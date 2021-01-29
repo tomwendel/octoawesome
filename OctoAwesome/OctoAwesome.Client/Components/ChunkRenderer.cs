@@ -235,6 +235,17 @@ namespace OctoAwesome.Client.Components
 
                 graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
                 graphicsDevice.VertexBuffer = VertexBuffer;
+                
+
+                foreach (var pass in simple.Shadow.Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
+                }
+
+                graphicsDevice.RasterizerState = new RasterizerState()
+                    {CullMode = CullMode.CounterClockwise, DepthBias = 4f, SlopeScaleDepthBias = 1.1f, DepthBiasMode = DepthBiasMode.BiasFillMode};//TODO: cache rasterizer
+                graphicsDevice.VertexBuffer = VertexBuffer;
 
                 foreach (var pass in simple.Shadow.Passes)
                 {
