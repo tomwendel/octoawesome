@@ -66,6 +66,37 @@ namespace OctoAwesome.Database
             return byteArray;
         }
 
+        public void WriteBytes(Writer writer, long position, bool flush = false)
+        {
+            Span<byte> byteArray = stackalloc byte[KEY_SIZE];
+
+            BitConverter.TryWriteBytes(byteArray, Index);
+            BitConverter.TryWriteBytes(byteArray[sizeof(long)..], ValueLength);
+
+            if (Tag is not null)
+                Tag.WriteBytes(byteArray[BASE_KEY_SIZE..(BASE_KEY_SIZE + Tag.Length)]);
+
+            if (flush)
+                    writer.WriteAndFlush(byteArray, position);
+            else
+                    writer.Write(byteArray, position);
+        }
+        public void WriteBytes(Writer writer, bool flush = false)
+        {
+            Span<byte> byteArray = stackalloc byte[KEY_SIZE];
+
+            BitConverter.TryWriteBytes(byteArray, Index);
+            BitConverter.TryWriteBytes(byteArray[sizeof(long)..], ValueLength);
+
+            if (Tag != null)
+                Tag.WriteBytes(byteArray[BASE_KEY_SIZE..(BASE_KEY_SIZE + Tag.Length)]);
+
+            if (flush)
+                    writer.WriteAndFlush(byteArray);
+            else
+                    writer.Write(byteArray);
+        }
+
         public static Key<TTag> FromBytes(byte[] array, int index)
         {
             var localIndex = BitConverter.ToInt64(array, index);

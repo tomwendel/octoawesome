@@ -12,8 +12,10 @@ using OctoAwesome.Runtime;
 using System.IO;
 using OctoAwesome.Serialization;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using OctoAwesome.Definitions;
 using engenious.Helper;
+using engenious.Utility;
 using engenious.UserDefined.Shaders;
 
 namespace OctoAwesome.Client.Components
@@ -42,11 +44,14 @@ namespace OctoAwesome.Client.Components
         private readonly IChunk[] chunks;
 
         private readonly IBlockDefinition[] blockDefinitions;
+        private readonly Action<IChunk> chunkChanged;
         private IPlanet planet;
         public bool Loaded { get; set; } = false;
 
-        public int VertexCount { get; private set; }
-        private int indexCount;
+        public bool CanRender => VertexBuffer != null && VertexCount > 0;
+
+        public int VertexCount => (int)VertexBuffer.VertexCount;
+        private int indexCount => VertexCount / 4 * 6;
         private ILocalChunkCache _manager;
         private Index3 _shift;
         private Index3 _cameraPos;
@@ -57,7 +62,7 @@ namespace OctoAwesome.Client.Components
         private readonly LockSemaphore semaphore = new(1, 1);
         private readonly object ibLock = new();
         private readonly Dictionary<IBlockDefinition, int> textureOffsets;
-        private readonly List<VertexPositionNormalTextureLight> vertices;
+        private readonly PoolingList<VertexPositionNormalTextureLight> vertices;
         /// <summary>
         /// Adresse des aktuellen Chunks
         /// </summary>
@@ -98,7 +103,7 @@ namespace OctoAwesome.Client.Components
             simple = simpleShader;
             GenerateIndexBuffer();
 
-            vertices = new List<VertexPositionNormalTextureLight>();
+            vertices = new PoolingList<VertexPositionNormalTextureLight>();
             // BlockTypes sammlen
             var localBlockDefinitions = definitionManager.BlockDefinitions;
             textureOffsets = new Dictionary<IBlockDefinition, int>(localBlockDefinitions.Length);
@@ -114,6 +119,9 @@ namespace OctoAwesome.Client.Components
             chunks = new IChunk[27];
             blockDefinitions = new IBlockDefinition[27];
 
+            chunkChanged = OnChunkChanged;
+
+            //simple.Ambient.Pass1.Apply();
             //simple.Ambient.BlockTextures = textures;
             //simple.Ambient.AmbientIntensity = 0.4f;
             //simple.Ambient.AmbientColor = Color.White.ToVector4();
@@ -145,13 +153,14 @@ namespace OctoAwesome.Client.Components
             }
 
             _manager = manager;
+            VertexBuffer?.Clear();
             ChunkPosition = newPosition;
 
             if (centerChunk != null)
             {
                 //CacheCurrentChunkVerticesData();
 
-                centerChunk.Changed -= OnChunkChanged;
+                centerChunk.Changed -= chunkChanged;
                 centerChunk = null;
             }
             this.planet = planet;
@@ -274,7 +283,7 @@ namespace OctoAwesome.Client.Components
                     indices.Add(i + 3);
                     indices.Add(i + 2);
                 }
-                IndexBuffer.SetData(indices.ToArray());
+                IndexBuffer.SetData<int>(CollectionsMarshal.AsSpan(indices));
             }
 
         }
@@ -299,7 +308,8 @@ namespace OctoAwesome.Client.Components
                     }
 
                     centerChunk = chunk;
-                    centerChunk.Changed += OnChunkChanged;
+                    centerChunk.Changed += chunkChanged;
+
                 }
                 vertices.Clear();
 
@@ -365,31 +375,30 @@ namespace OctoAwesome.Client.Components
                 return RegisterNewVertices(chunk);
             }
         }
-#if DEBUG
-        private bool RegisterNewVertices(IChunk chunk)
-#else
-        private unsafe bool RegisterNewVertices(IChunk chunk)
-#endif
+
+        private static void SendVerticesToGpu(ChunkRenderer that, VertexPositionNormalTextureLight[] stolenVertices, int vertexCount)
         {
-            VertexCount = vertices.Count;
-            indexCount = vertices.Count * 6 / 4;
-
-            if (VertexCount > 0)
+            if (that.VertexBuffer == null || IndexBuffer == null)
             {
-                ThreadingHelper.OnUiThread((t) =>
-                {
-                    if (VertexBuffer == null || IndexBuffer == null)
-                    {
-                        VertexBuffer = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, VertexCount);
-                    }
-                    if (VertexCount > VertexBuffer.VertexCount)
-                        VertexBuffer.Resize(VertexCount);
-
-
-                    VertexBuffer.SetData(vertices.ToArray());
-                }, null);
+                that.VertexBuffer = new VertexBuffer(that.graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount, BufferUsageHint.StreamDraw);
+                that.VertexBuffer.SetData<VertexPositionNormalTextureLight>(stolenVertices.AsSpan(0, vertexCount));
             }
+            else
+            {
+                that.VertexBuffer.ExchangeData<VertexPositionNormalTextureLight>(stolenVertices.AsSpan(0, vertexCount));
+            }
+            that.vertices.ReturnBuffer(stolenVertices);
+        }
 
+        private unsafe bool RegisterNewVertices(IChunk chunk)
+        {
+            int vertexCount = vertices.Count;
+
+            if (vertexCount > 0)
+            {
+                var verticesStolen = vertices.StealAndClearBuffer();
+                graphicsDevice.UiThread.QueueWork(CapturingDelegate.Create(&SendVerticesToGpu, this, verticesStolen, vertexCount));
+            }
             lock (this)
             {
                 if (chunk != null && chunk.Index != ChunkPosition)
@@ -402,11 +411,8 @@ namespace OctoAwesome.Client.Components
                 return !NeedsUpdate;
             }
         }
-#if DEBUG
-        private void GenerateVertices(IChunk centerChunk, IChunk[] chunks, int z, int y, int x, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
-#else
-        private unsafe void GenerateVertices(IChunk centerChunk, IChunk[] chunks, int z, int y, int x, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
-#endif
+
+        private void GenerateVertices(IChunk centerChunk, IChunk[] chunks, Vector2[] uvOffsets, int z, int y, int x, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
         {
             ushort block = centerChunk.GetBlock(x, y, z);
 
@@ -428,21 +434,17 @@ namespace OctoAwesome.Client.Components
             if (vertices.Count == 0)
                 vertices.Capacity = 4096;
 
- #if DEBUG
-            var blocks = new ushort[27];
- #else
+
             Span<ushort> blocks = stackalloc ushort[27];
-#endif
+ 
             ushort topBlock, bottomBlock, southBlock, northBlock, westBlock, eastBlock;
             if (getFromManager)
             {
 
-                IChunk chunk;
                 for (int zOffset = -1; zOffset <= 1; zOffset++)
                     for (int yOffset = -1; yOffset <= 1; yOffset++)
                         for (int xOffset = -1; xOffset <= 1; xOffset++)
                         {
-                            chunk = chunks[GetIndex(IsBorder(z) * OutsiteOfChunkBorderInDirection(z, zOffset), IsBorder(y) * OutsiteOfChunkBorderInDirection(y, yOffset), IsBorder(x) * OutsiteOfChunkBorderInDirection(x, xOffset))];
                             blocks[GetIndex(zOffset, yOffset, xOffset)] = manager.GetBlock((chunkPosition * Chunk.CHUNKSIZE) + new Index3(x + xOffset, y + yOffset, z + zOffset));
                         }
             }
@@ -777,7 +779,7 @@ namespace OctoAwesome.Client.Components
 
             if (centerChunk != null)
             {
-                centerChunk.Changed -= OnChunkChanged;
+                centerChunk.Changed -= chunkChanged;
                 centerChunk = null;
             }
 

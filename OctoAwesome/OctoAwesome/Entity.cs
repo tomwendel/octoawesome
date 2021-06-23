@@ -1,8 +1,10 @@
 ﻿using engenious;
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome
@@ -10,12 +12,12 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity : ISerializable, IIdentification
+    public abstract class Entity : ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification>
     {
         /// <summary>
         /// Contains all Components.
         /// </summary>
-        public ComponentList<EntityComponent> Components { get; private set; }
+        public ComponentList<IEntityComponent> Components { get; private set; }
 
         /// <summary>
         /// Id
@@ -27,25 +29,30 @@ namespace OctoAwesome
         /// </summary>
         public Simulation Simulation { get; internal set; }
 
+        /// <summary>
+        /// Contains only Components with notification interface implementation.
+        /// </summary>
+        private readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
         public Entity()
         {
-            Components = new ComponentList<EntityComponent>(
-                ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
+            Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
+            notificationComponents = new();
             Id = Guid.Empty;
         }
 
-        private void OnRemoveComponent(EntityComponent component)
+        private void OnRemoveComponent(IEntityComponent component)
         {
 
         }
 
-        private void OnAddComponent(EntityComponent component)
+        private void OnAddComponent(IEntityComponent component)
         {
-            component.SetEntity(this);
+            if (component is InstanceComponent<INotificationSubject<SerializableNotification>> instanceComponent)
+                instanceComponent.SetInstance(this);
 
             //HACK: Remove PositionComponent Dependency
             if (component is LocalChunkCacheComponent cacheComponent)
@@ -60,15 +67,18 @@ namespace OctoAwesome
 
                 cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
             }
+
+            if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
+                notificationComponents.Add(nofiticationComponent);
         }
 
-        private void ValidateAddComponent(EntityComponent component)
+        private void ValidateAddComponent(IEntityComponent component)
         {
             if (Simulation != null)
                 throw new NotSupportedException("Can't add components during simulation");
         }
 
-        private void ValidateRemoveComponent(EntityComponent component)
+        private void ValidateRemoveComponent(IEntityComponent component)
         {
             if (Simulation != null)
                 throw new NotSupportedException("Can't remove components during simulation");
@@ -120,16 +130,19 @@ namespace OctoAwesome
             return base.Equals(obj);
         }
 
-        public virtual void OnUpdate(SerializableNotification notification)
+        public virtual void OnNotification(SerializableNotification notification)
         {
         }
 
-
-        public virtual void Update(SerializableNotification notification)
+        public virtual void Push(SerializableNotification notification)
         {
-            foreach (var component in Components)
-                component?.OnUpdate(notification);
+            foreach (var component in notificationComponents)
+                component?.OnNotification(notification);
         }
 
+        public bool ContainsComponent<T>() 
+            => Components.ContainsComponent<T>();
+        public T GetComponent<T>()
+            => Components.GetComponent<T>();
     }
 }

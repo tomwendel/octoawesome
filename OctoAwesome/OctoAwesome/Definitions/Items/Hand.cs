@@ -13,7 +13,7 @@ namespace OctoAwesome.Definitions.Items
 
         }
 
-        public override int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
+        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             if(material is ISolidMaterialDefinition solidMaterial)
             {

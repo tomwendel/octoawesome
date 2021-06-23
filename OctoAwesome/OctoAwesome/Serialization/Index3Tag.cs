@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Database;
+
 using System;
 using System.Security.Cryptography;
 
@@ -20,16 +21,18 @@ namespace OctoAwesome.Serialization
         public byte[] GetBytes()
         {
             var byteArray = new byte[Length];
+            const int intSize = sizeof(int);
+
             Buffer.BlockCopy(BitConverter.GetBytes(Index.X), 0, byteArray, 0, sizeof(int));
             Buffer.BlockCopy(BitConverter.GetBytes(Index.Y), 0, byteArray, sizeof(int), sizeof(int));
-            Buffer.BlockCopy(BitConverter.GetBytes(Index.Z), 0, byteArray, sizeof(int)+ sizeof(int), sizeof(int));
+            Buffer.BlockCopy(BitConverter.GetBytes(Index.Z), 0, byteArray, sizeof(int) + sizeof(int), sizeof(int));
             return byteArray;
         }
 
-        public override bool Equals(object obj) 
+        public override bool Equals(object obj)
             => obj is Index3Tag tag && Equals(tag);
 
-        public bool Equals(Index3Tag other) 
+        public bool Equals(Index3Tag other)
             => Length == other.Length && Index.Equals(other.Index);
 
         public override int GetHashCode()
@@ -40,10 +43,17 @@ namespace OctoAwesome.Serialization
             return hashCode;
         }
 
-        public static bool operator ==(Index3Tag left, Index3Tag right) 
+        public void WriteBytes(Span<byte> span)
+        {
+            BitConverter.TryWriteBytes(span, Index.X);
+            BitConverter.TryWriteBytes(span[sizeof(int)..], Index.Y);
+            BitConverter.TryWriteBytes(span[(sizeof(int) + sizeof(int))..], Index.Z);
+        }
+
+        public static bool operator ==(Index3Tag left, Index3Tag right)
             => left.Equals(right);
 
-        public static bool operator !=(Index3Tag left, Index3Tag right) 
+        public static bool operator !=(Index3Tag left, Index3Tag right)
             => !(left == right);
     }
 }

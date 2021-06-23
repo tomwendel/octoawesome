@@ -53,7 +53,7 @@ namespace OctoAwesome.Basics.Entities
             Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
             Components.AddComponent(new MoveableComponent());
-            Components.AddComponent(new BoxCollisionComponent());
+            Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
             Components.AddComponent(new ControllableComponent());
             Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 2, 1));

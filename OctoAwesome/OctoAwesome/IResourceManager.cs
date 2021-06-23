@@ -1,4 +1,6 @@
+using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Concurrent;
@@ -84,9 +86,9 @@ namespace OctoAwesome
         void SaveChunkColumn(IChunkColumn value);
         IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
         Entity LoadEntity(Guid entityId);
-        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent;
-        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : EntityComponent;
+        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent;
+        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent;
         IEnumerable<Guid> GetEntityIds();
-        (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : EntityComponent, new();
+        (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new();
     }
 }

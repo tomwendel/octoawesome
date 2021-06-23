@@ -3,35 +3,36 @@ using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using engenious.Input;
 using System.Collections.Generic;
-using OctoAwesome.Client.Controls;
 using engenious;
 using OctoAwesome.EntityComponents;
 using engenious.UI.Controls;
 using OctoAwesome.Definitions;
+using OctoAwesome.UI.Components;
+using OctoAwesome.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class InventoryScreen : Screen
     {
-        private Dictionary<string, Texture2D> toolTextures = new Dictionary<string, Texture2D>();
+        private readonly Dictionary<string, Texture2D> toolTextures = new();
 
-        private PlayerComponent player;
+        private readonly PlayerComponent player;
 
-        private AssetComponent assets;
+        private readonly AssetComponent assets;
 
-        private InventoryControl inventory;
+        private readonly InventoryControl inventory;
 
-        private Label nameLabel;
+        private readonly Label nameLabel;
 
-        private Label massLabel;
+        private readonly Label massLabel;
 
-        private Label volumeLabel;
+        private readonly Label volumeLabel;
 
-        private Image[] images;
+        private readonly Image[] images;
 
-        private Brush backgroundBrush;
+        private readonly Brush backgroundBrush;
 
-        private Brush hoverBrush;
+        private readonly Brush hoverBrush;
 
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
@@ -51,7 +52,7 @@ namespace OctoAwesome.Client.Screens
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
 
-            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
+            Texture2D panelBackground = assets.LoadTexture( "panel");
 
             Grid grid = new Grid(manager)
             {
@@ -66,7 +67,7 @@ namespace OctoAwesome.Client.Screens
 
             Controls.Add(grid);
 
-            inventory = new InventoryControl(manager)
+            inventory = new InventoryControl(manager, assets, manager.Player.Inventory.Inventory)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -85,12 +86,27 @@ namespace OctoAwesome.Client.Screens
                 Margin = Border.All(10, 0, 0, 0),
             };
 
-            nameLabel = new Label(manager);
+            nameLabel = new Label(manager) 
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch, 
+                HorizontalTextAlignment = HorizontalAlignment.Center
+            };
             infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label(manager);
+
+            massLabel = new Label(manager) 
+            { 
+                HorizontalAlignment = HorizontalAlignment.Stretch, 
+                HorizontalTextAlignment = HorizontalAlignment.Center 
+            };
             infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label(manager);
+
+            volumeLabel = new Label(manager) 
+            { 
+                HorizontalAlignment = HorizontalAlignment.Stretch, 
+                HorizontalTextAlignment = HorizontalAlignment.Center
+            };
             infoPanel.Controls.Add(volumeLabel);
+
             grid.AddControl(infoPanel, 1, 0);
 
             Grid toolbar = new Grid(manager)
@@ -121,7 +137,7 @@ namespace OctoAwesome.Client.Screens
                     Padding = Border.All(2),
                 };
 
-                image.StartDrag += (e) =>
+                image.StartDrag += (c,e) =>
                 {
                     InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
                     if (slot != null)
@@ -133,9 +149,9 @@ namespace OctoAwesome.Client.Screens
                     }
                 };
 
-                image.DropEnter += (e) => { image.Background = hoverBrush; };
-                image.DropLeave += (e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (e) =>
+                image.DropEnter += (c,e) => { image.Background = hoverBrush; };
+                image.DropLeave += (c,e) => { image.Background = backgroundBrush; };
+                image.EndDrop += (c,e) =>
                 {
                     e.Handled = true;
 
@@ -163,7 +179,7 @@ namespace OctoAwesome.Client.Screens
             }
 
             grid.AddControl(toolbar, 0, 1, 2);
-            Title = Languages.OctoClient.Inventory;
+            Title = UI.Languages.OctoClient.Inventory;
         }
 
         protected override void OnEndDrop(DragEventArgs args)

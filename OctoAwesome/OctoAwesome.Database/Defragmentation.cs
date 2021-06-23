@@ -46,6 +46,7 @@ namespace OctoAwesome.Database
         {
             using (FileStream newKeyStoreFile = keyStoreFile.Open(FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
             {
+
                 foreach (Key<TTag> key in keyList)
                     newKeyStoreFile.Write(key.GetBytes(), 0, Key<TTag>.KEY_SIZE);
             }
@@ -64,21 +65,21 @@ namespace OctoAwesome.Database
 
                     if (key.IsEmpty)
                     {
-                        var intBuffer = new byte[sizeof(int)];
-                        if (currentValueStoreStream.Read(intBuffer, 0, sizeof(int)) == 0)
+                        Span<byte> intBuffer = stackalloc byte[sizeof(int)];
+                        if (currentValueStoreStream.Read(intBuffer) == 0)
                             break;
-                        var length = BitConverter.ToInt32(intBuffer, 0) - sizeof(int);
+                        var length = BitConverter.ToInt32(intBuffer) - sizeof(int);
                         if (length < 0)
                             throw new DataMisalignedException();
                         currentValueStoreStream.Seek(length, SeekOrigin.Current);
                     }
                     else
                     {
-                        var buffer = new byte[key.ValueLength];
-                        if (currentValueStoreStream.Read(buffer, 0, buffer.Length) == 0)
+                        Span<byte> buffer = stackalloc byte[key.ValueLength];
+                        if (currentValueStoreStream.Read(buffer) == 0)
                             break;
                         newValueStoreStream.Write(keyBuffer, 0, keyBuffer.Length);
-                        newValueStoreStream.Write(buffer, 0, buffer.Length);
+                        newValueStoreStream.Write(buffer);
                         yield return key;
                     }
                 } while (currentValueStoreStream.Position < currentValueStoreStream.Length);
@@ -98,10 +99,10 @@ namespace OctoAwesome.Database
 
                     if (key.IsEmpty)
                     {
-                        var intBuffer = new byte[sizeof(int)];
-                        if (fileStream.Read(intBuffer, 0, sizeof(int)) == 0)
+                        Span<byte> intBuffer = stackalloc byte[sizeof(int)];
+                        if (fileStream.Read(intBuffer) == 0)
                             break;
-                        length = BitConverter.ToInt32(intBuffer, 0) - sizeof(int);
+                        length = BitConverter.ToInt32(intBuffer) - sizeof(int);
                     }
                     else
                     {

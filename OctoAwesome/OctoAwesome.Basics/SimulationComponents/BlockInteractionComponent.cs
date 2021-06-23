@@ -8,11 +8,15 @@ using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Definitions;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
-    public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
+    public class BlockInteractionComponent : SimulationComponent<
+        Entity,
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
+        ControllableComponent,
+        InventoryComponent>
     {
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
@@ -24,59 +28,22 @@ namespace OctoAwesome.Basics.SimulationComponents
             service = interactionService;
         }
 
-        protected override bool AddEntity(Entity entity)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
         {
-            return true;
-        }
+            var entity = value.Value;
+            var controller = value.Component1;
+            var inventory = value.Component2;
 
-        protected override void RemoveEntity(Entity entity)
-        {
-
-        }
-
-        protected override void UpdateEntity(GameTime gameTime, Entity entity, ControllableComponent controller, InventoryComponent inventory)
-        {
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
             var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
 
-            if (controller.InteractBlock.HasValue)
-            {
-                var lastBlock = cache.GetBlockInfo(controller.InteractBlock.Value);
-
-                if (!lastBlock.IsEmpty)
-                {
-                    IItem activeItem;
-                    if (toolbar.ActiveTool.Item is IItem item)
-                    {
-                        activeItem = item;
-                    }
-                    else
-                    {
-                        activeItem = toolbar.HandSlot.Item as IItem;
-                    }
-
-                    var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
-
-                    if (blockHitInformation.Valid)
-                        foreach (var (Quantity, Definition) in blockHitInformation.List)
-                        {
-                            if (activeItem is IFluidInventory fluidInventory 
-                                && Definition is IBlockDefinition fluidBlock 
-                                && fluidBlock.Material is IFluidMaterialDefinition)
-                            {
-                                fluidInventory.AddFluid(Quantity, fluidBlock);
-                            }
-                            else if (Definition is IInventoryable invDef)
-                            {
-                                inventory.AddUnit(Quantity, invDef);
-                            }
-                             
-                        }
-
-
-                }
-                controller.InteractBlock = null;
-            }
+            controller
+                .Selection?
+                .Map(
+                blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                functionalBlock => functionalBlock.Interact(gameTime, entity),
+                entity => { }
+                );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
             {
@@ -141,6 +108,42 @@ namespace OctoAwesome.Basics.SimulationComponents
                     }
                 }
                 controller.ApplyBlock = null;
+            }
+        }
+
+        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool.Item is IItem item)
+                {
+                    activeItem = item;
+                }
+                else
+                {
+                    activeItem = toolbar.HandSlot.Item as IItem;
+                }
+
+                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+
+                if (blockHitInformation.Valid)
+                    foreach (var (Quantity, Definition) in blockHitInformation.List)
+                    {
+                        if (activeItem is IFluidInventory fluidInventory
+                            && Definition is IBlockDefinition fluidBlock
+                            && fluidBlock.Material is IFluidMaterialDefinition)
+                        {
+                            fluidInventory.AddFluid(Quantity, fluidBlock);
+                        }
+                        else if (Definition is IInventoryable invDef)
+                        {
+                            inventory.AddUnit(Quantity, invDef);
+                        }
+
+                    }
+
+
             }
         }
     }

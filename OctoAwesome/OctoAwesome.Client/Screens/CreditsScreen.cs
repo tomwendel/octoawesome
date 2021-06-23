@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Screens
         {
             Padding = new Border(0, 0, 0, 0);
 
-            Title = Languages.OctoClient.CreditsCrew;
+            Title = UI.Languages.OctoClient.CreditsCrew;
 
             SetDefaultBackground();
 

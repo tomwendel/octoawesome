@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using engenious;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Basics.Definitions.Items;
+using OctoAwesome.SumTypes;
 
 namespace OctoAwesome.Client.Components
 {
@@ -50,7 +50,7 @@ namespace OctoAwesome.Client.Components
         public PositionComponent Position { get; private set; }
 
         // public ActorHost ActorHost { get; private set; }
-
+        public Selection Selection { get; set; }
         public Index3? SelectedBox { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
@@ -120,8 +120,14 @@ namespace OctoAwesome.Client.Components
             JumpInput = false;
 
             if (InteractInput && SelectedBox.HasValue)
+                CurrentController.Selection = Selection;
+            else
+                CurrentController.Selection = null;
+                       
+            if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;
-
+            else
+                CurrentController.InteractBlock = null;
 
             if (ApplyInput && SelectedBox.HasValue)
             {
@@ -130,7 +136,6 @@ namespace OctoAwesome.Client.Components
             }
 
             ApplyInput = false;
-
             //if (FlymodeInput)
             //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             //FlymodeInput = false;

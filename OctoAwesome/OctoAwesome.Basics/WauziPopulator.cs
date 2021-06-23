@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.Entities;
+using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics

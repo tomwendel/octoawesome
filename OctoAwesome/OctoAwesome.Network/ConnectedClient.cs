@@ -48,6 +48,10 @@ namespace OctoAwesome.Network
                     command = OfficialCommand.EntityNotification;
                     payload = Serializer.Serialize(entityNotification);
                     break;
+                case FunctionalBlockNotification functionalBlockNotification:
+                    command = OfficialCommand.FunctionalBlockNotification;
+                    payload = Serializer.Serialize(functionalBlockNotification);
+                    break;
 
                 case BlocksChangedNotification _:
                 case BlockChangedNotification _:

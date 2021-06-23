@@ -2,6 +2,7 @@
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
+using OctoAwesome.UI.Components;
 using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
@@ -16,12 +17,12 @@ namespace OctoAwesome.Client.Screens
 
             Padding = new Border(0,0,0,0);
 
-            Background = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "background"), TextureBrushMode.Stretch);
+            Background = new TextureBrush(assets.LoadTexture( "background"), TextureBrushMode.Stretch);
 
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
 
-            Button startButton = new TextButton(manager, Languages.OctoClient.Start);
+            Button startButton = new TextButton(manager, UI.Languages.OctoClient.Start);
             startButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
@@ -31,7 +32,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(startButton);
 
-            Button multiplayerButton = new TextButton(manager, Languages.OctoClient.Multiplayer);
+            Button multiplayerButton = new TextButton(manager, UI.Languages.OctoClient.Multiplayer);
             multiplayerButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             multiplayerButton.Margin = new Border(0, 0, 0, 10);
             multiplayerButton.LeftMouseClick += (s, e) =>
@@ -40,7 +41,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(multiplayerButton);
 
-            Button optionButton = new TextButton(manager, Languages.OctoClient.Options);
+            Button optionButton = new TextButton(manager, UI.Languages.OctoClient.Options);
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             optionButton.Margin = new Border(0, 0, 0, 10);
             optionButton.MinWidth = 300;
@@ -50,7 +51,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(optionButton);
 
-            Button creditsButton = new TextButton(manager, Languages.OctoClient.CreditsCrew);
+            Button creditsButton = new TextButton(manager, UI.Languages.OctoClient.CreditsCrew);
             creditsButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             creditsButton.Margin = new Border(0, 0, 0, 10);
             creditsButton.LeftMouseClick += (s, e) =>
@@ -69,7 +70,7 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(webButton);
 
-            Button exitButton = new TextButton(manager, Languages.OctoClient.Exit);
+            Button exitButton = new TextButton(manager, UI.Languages.OctoClient.Exit);
             exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             exitButton.Margin = new Border(0, 0, 0, 10);
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };

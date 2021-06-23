@@ -1,6 +1,8 @@
-﻿using OctoAwesome.Network.Pooling;
+﻿using OctoAwesome.Logging;
+using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
+
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -15,7 +17,7 @@ namespace OctoAwesome.Network
     {
         private static uint NextId => ++nextId;
         private static uint nextId;
-
+        private static ILogger logger = TypeContainer.Get<ILogger>().As(nameof(BaseClient));
         static BaseClient()
         {
             nextId = 0;
@@ -29,7 +31,9 @@ namespace OctoAwesome.Network
         private byte nextSendQueueWriteIndex;
         private bool sending;
         private Package currentPackage;
+        private Task recPackageWorker;
         private readonly ConcurrentBag<IAsyncObserver<Package>> observers;
+        private readonly ConcurrentQueue<Package> recievedPackages;
         private readonly PackagePool packagePool;
         private readonly SocketAsyncEventArgs sendArgs;
 
@@ -38,7 +42,7 @@ namespace OctoAwesome.Network
         private readonly CancellationTokenSource cancellationTokenSource;
 
         protected BaseClient()
-        {            
+        {
             sendQueue = new (byte[] data, int len)[256];
             sendLock = new object();
             ReceiveArgs = new SocketAsyncEventArgs();
@@ -50,7 +54,14 @@ namespace OctoAwesome.Network
             sendArgs.Completed += OnSent;
 
             observers = new ConcurrentBag<IAsyncObserver<Package>>();
+            recievedPackages = new ConcurrentQueue<Package>();
             cancellationTokenSource = new CancellationTokenSource();
+            recPackageWorker = Task.Run(PackageQueueWorker);
+            Task.Run(PackageQueueWorker);
+            Task.Run(PackageQueueWorker);
+            Task.Run(PackageQueueWorker);
+            Task.Run(PackageQueueWorker);
+            Task.Run(PackageQueueWorker);
 
             Id = NextId;
         }
@@ -112,15 +123,15 @@ namespace OctoAwesome.Network
 
         public void SendPackageAndRelase(Package package)
         {
-            var task = Task.Run(async () => await SendPackageAsync(package));
-            task.Wait();
+            var t = Task.Run(async () => await SendPackageAsync(package));
+            t.Wait();
             package.Release();
         }
 
         public Task<IDisposable> Subscribe(IAsyncObserver<Package> observer)
         {
             observers.Add(observer);
-            return Task.FromResult( new Subscription<Package>(this, observer) as IDisposable);
+            return Task.FromResult(new Subscription<Package>(this, observer) as IDisposable);
         }
 
         private void SendInternal(byte[] data, int len)
@@ -228,19 +239,37 @@ namespace OctoAwesome.Network
 
             if (currentPackage.IsComplete)
             {
-                var package = currentPackage;
-                Task.Run(() =>
-                {
-                    foreach (var observer in observers)
-                        observer.OnNext(package);
+                recievedPackages.Enqueue(currentPackage);
 
-                    package.Release();
-                });
 
                 currentPackage = null;
             }
 
             return offset;
+        }
+
+        private void PackageQueueWorker()
+        {
+            while (true)
+            {
+                if (recievedPackages.TryDequeue(out var package))
+                {
+                    try
+                    {
+                        foreach (var observer in observers)
+                            observer.OnNext(package);
+                        package.Release();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex);
+                    }
+
+                }
+                else
+                    Thread.Sleep(1);
+            }
+
         }
     }
 }

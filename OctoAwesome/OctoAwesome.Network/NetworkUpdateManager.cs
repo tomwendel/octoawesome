@@ -19,6 +19,7 @@ namespace OctoAwesome.Network
         private readonly IDisposable hubSubscription;
         private readonly IDisposable clientSubscription;
         private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly IPool<FunctionalBlockNotification> functionalBlockNotificationPool;
         private readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private readonly IPool<BlocksChangedNotification> blocksChangedNotificationPool;
         private readonly PackagePool packagePool;
@@ -30,6 +31,7 @@ namespace OctoAwesome.Network
 
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkUpdateManager));
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            functionalBlockNotificationPool = TypeContainer.Get<IPool<FunctionalBlockNotification>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
             blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
             packagePool = TypeContainer.Get<PackagePool>();
@@ -47,6 +49,11 @@ namespace OctoAwesome.Network
                     var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, package.Payload);
                     updateHub.Push(entityNotification, DefaultChannels.Simulation);
                     entityNotification.Release();
+                    break;
+                case OfficialCommand.FunctionalBlockNotification:
+                    var functionalBlockNotification = Serializer.DeserializePoolElement(functionalBlockNotificationPool, package.Payload);
+                    updateHub.Push(functionalBlockNotification, DefaultChannels.Simulation);
+                    functionalBlockNotification.Release();
                     break;
                 case OfficialCommand.ChunkNotification:
                     var notificationType = (BlockNotificationType)package.Payload[0];
@@ -81,6 +88,10 @@ namespace OctoAwesome.Network
                 case EntityNotification entityNotification:
                     command = (ushort)OfficialCommand.EntityNotification;
                     payload = Serializer.Serialize(entityNotification);
+                    break;
+                case FunctionalBlockNotification functionalBlockNotification:
+                    command = (ushort)OfficialCommand.FunctionalBlockNotification;
+                    payload = Serializer.Serialize(functionalBlockNotification);
                     break;
                 case BlockChangedNotification chunkNotification:
                     command = (ushort)OfficialCommand.ChunkNotification;

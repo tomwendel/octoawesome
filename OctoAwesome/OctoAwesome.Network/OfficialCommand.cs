@@ -17,6 +17,7 @@ namespace OctoAwesome.Network
         SaveColumn = 105,
         //400 - 500 Notifications
         EntityNotification = 401,
-        ChunkNotification = 402
+        ChunkNotification = 402,
+        FunctionalBlockNotification = 403
     }
 }

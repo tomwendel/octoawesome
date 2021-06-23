@@ -92,7 +92,7 @@ namespace OctoAwesome.Client.Screens
             };
             mainGrid.AddControl(buttonStack, 1, 2);
 
-            Button cancelButton = GetButton(Languages.OctoClient.Cancel);
+            Button cancelButton = GetButton(UI.Languages.OctoClient.Cancel);
             buttonStack.Controls.Add(cancelButton);
 
             Debug.WriteLine("Create GameScreen");

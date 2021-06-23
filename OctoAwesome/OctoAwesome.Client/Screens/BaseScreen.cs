@@ -2,6 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -20,7 +21,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (Manager.CanGoBack)
             {
-                BackButton = new TextButton(Manager, Languages.OctoClient.Back);
+                BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back);
                 BackButton.VerticalAlignment = VerticalAlignment.Top;
                 BackButton.HorizontalAlignment = HorizontalAlignment.Left;
                 BackButton.LeftMouseClick += (s, e) =>
@@ -35,7 +36,7 @@ namespace OctoAwesome.Client.Screens
 
         protected void SetDefaultBackground()
         {
-            Background = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "background_new"), TextureBrushMode.Stretch);
+            Background = new TextureBrush(assets.LoadTexture("background_new"), TextureBrushMode.Stretch);
         }
 
         protected override void OnKeyPress(KeyEventArgs args)

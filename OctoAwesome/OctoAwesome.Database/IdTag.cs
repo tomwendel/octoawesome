@@ -35,6 +35,11 @@ namespace OctoAwesome.Database
             return hashCode;
         }
 
+        public void WriteBytes(Span<byte> span)
+        {
+            BitConverter.TryWriteBytes(span, Tag);
+        }
+
         public static bool operator ==(IdTag<T> left, IdTag<T> right)
         {
             return left.Equals(right);

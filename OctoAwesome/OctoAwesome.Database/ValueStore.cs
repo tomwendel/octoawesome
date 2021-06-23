@@ -32,9 +32,10 @@ namespace OctoAwesome.Database
 
         internal Key<TTag> AddValue<TTag>(TTag tag, Value value) where TTag : ITag, new()
         {
+            
             var key = new Key<TTag>(tag, writer.ToEnd(), value.Content.Length);
             //TODO: Hash, Sync
-            writer.Write(key.GetBytes(), 0, Key<TTag>.KEY_SIZE);
+            key.WriteBytes(writer);
             writer.WriteAndFlush(value.Content, 0, value.Content.Length);
             return key;
         }
@@ -56,7 +57,7 @@ namespace OctoAwesome.Database
 
         internal void Remove<TTag>(Key<TTag> key) where TTag : ITag, new()
         {
-            writer.Write(Key<TTag>.Empty.GetBytes(), 0, Key<TTag>.KEY_SIZE, key.Index);
+            Key<TTag>.Empty.WriteBytes(writer, key.Index);
             writer.WriteAndFlush(BitConverter.GetBytes(key.ValueLength), 0, sizeof(int), key.Index + Key<TTag>.KEY_SIZE);
         }
 

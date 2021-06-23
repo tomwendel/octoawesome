@@ -7,7 +7,7 @@ using System.IO;
 
 namespace OctoAwesome.Client.Cache
 {
-    internal class VerticesForChunk : IDisposable, ISerializable
+    internal partial class VerticesForChunk : IDisposable, ISerializable
     {
         public int Version { get; set; }
         public Index3 ChunkPosition { get; set; }

@@ -1,5 +1,7 @@
 ﻿using NLog.Internal;
+
 using OctoAwesome.Pooling;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +39,19 @@ namespace OctoAwesome.Serialization
 
                     return ms.ToArray();
                 }
+            }
+        }
+
+        public static byte[] SerializeCompressed<T>(T obj, int capacity) where T : ISerializable
+        {
+            using (var stream = new MemoryStream(capacity))
+            using (var zip = new GZipStream(stream, CompressionMode.Compress))
+            using (var buff = new BufferedStream(zip))
+            {
+                using (var writer = new BinaryWriter(buff, Encoding.Default, true))
+                    obj.Serialize(writer);
+
+                return stream.ToArray();
             }
         }
 

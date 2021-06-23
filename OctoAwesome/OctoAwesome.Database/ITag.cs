@@ -11,5 +11,6 @@ namespace OctoAwesome.Database
         byte[] GetBytes();
 
         void FromBytes(byte[] array, int startIndex);
+        void WriteBytes(Span<byte> span);
     }
 }

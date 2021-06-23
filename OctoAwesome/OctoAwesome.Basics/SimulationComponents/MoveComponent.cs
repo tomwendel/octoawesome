@@ -4,29 +4,36 @@ using OctoAwesome.Basics.EntityComponents;
 using System.Linq;
 using OctoAwesome.EntityComponents;
 using engenious.Helper;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(MoveableComponent), typeof(PositionComponent))]
-    public sealed class MoveComponent : SimulationComponent<MoveableComponent, PositionComponent>
+    public sealed class MoveComponent : SimulationComponent<
+        Entity,
+        SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
+        MoveableComponent,
+        PositionComponent>
     {
-        protected override bool AddEntity(Entity entity)
+        protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
+            var movecomp = entity.Components.GetComponent<MoveableComponent>();
             var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
 
             var planet = cache.Planet;
             poscomp.Position.NormalizeChunkIndexXY(planet.Size);
             cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
-            return true;
+            return new SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>(entity, movecomp, poscomp);
         }
 
-        protected override void RemoveEntity(Entity entity)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> value)
         {
-        }
+            var entity = value.Value;
+            var movecomp = value.Component1;
+            var poscomp = value.Component2;
 
-        protected override void UpdateEntity(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
-        {
+            if (movecomp is null || poscomp is null)
+                return;
 
             if (entity.Id == Guid.Empty)
                 return;
@@ -53,11 +60,22 @@ namespace OctoAwesome.Basics.SimulationComponents
                 poscomp.Position = newposition;
             }
 
+            // Fix fluctuations for direction because of external forces
+            var tmp = movecomp.PositionMove;
+            if (Math.Abs(tmp.X) < 0.01)
+            {
+                tmp.X = 0;
+            }
+            if (Math.Abs(tmp.Y) < 0.01)
+            {
+                tmp.Y = 0;
+            }
+            movecomp.PositionMove = tmp;
+
             //Direction
             if (movecomp.PositionMove.LengthSquared != 0)
             {
-                var direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
-                poscomp.Direction = direction;
+                poscomp.Direction = (float)MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
             }
         }
 
@@ -114,55 +132,60 @@ namespace OctoAwesome.Basics.SimulationComponents
                         if (block == 0)
                             continue;
 
-
-
-                        var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, movecomp.Velocity).ToList();
-
-                        var planes = from pp in playerplanes
-                                     from bp in blockplane
-                                     where CollisionPlane.Intersect(bp, pp)
-                                     let distance = CollisionPlane.GetDistance(bp, pp)
-                                     where CollisionPlane.CheckDistance(distance, move)
-                                     select new { BlockPlane = bp, PlayerPlane = pp, Distance = distance };
-
-                        foreach (var plane in planes)
+                        var poolingList = new engenious.Utility.PoolingList<CollisionPlane>();
+                        foreach (var item in CollisionPlane.GetBlockCollisionPlanes(pos, movecomp.Velocity))
                         {
+                            poolingList.Add(item);
+                        }
 
-                            var subvelocity = (plane.Distance / (float)gameTime.ElapsedGameTime.TotalSeconds);
-                            var diff = movecomp.Velocity - subvelocity;
-
-                            float vx;
-                            float vy;
-                            float vz;
-
-                            if (plane.BlockPlane.normal.X != 0 && (movecomp.Velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 || movecomp.Velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
-                                vx = subvelocity.X;
-                            else
-                                vx = movecomp.Velocity.X;
-
-                            if (plane.BlockPlane.normal.Y != 0 && (movecomp.Velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 || movecomp.Velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
-                                vy = subvelocity.Y;
-                            else
-                                vy = movecomp.Velocity.Y;
-
-                            if (plane.BlockPlane.normal.Z != 0 && (movecomp.Velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 || movecomp.Velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
-                                vz = subvelocity.Z;
-                            else
-                                vz = movecomp.Velocity.Z;
-
-                            if (Math.Abs(vx) < 0.01f)
-                                vx = 0;
-                            if (Math.Abs(vy) < 0.01f)
-                                vy = 0;
-                            if (Math.Abs(vz) < 0.01f)
-                                vz = 0;
-
-                            movecomp.Velocity = new Vector3(vx, vy, vz);
-
-                            if (vx == 0 && vy == 0 && vz == 0)
+                        foreach (var playerPlane in playerplanes)
+                        {
+                            foreach (var blockPlane in poolingList)
                             {
-                                abort = true;
-                                break;
+                                if (!CollisionPlane.Intersect(blockPlane, playerPlane))
+                                    continue;
+                                    
+                                var distance = CollisionPlane.GetDistance(blockPlane, playerPlane);
+
+                                if (!CollisionPlane.CheckDistance(distance, move))
+                                    continue;
+
+                                var subvelocity = (distance / (float)gameTime.ElapsedGameTime.TotalSeconds);
+                                var diff = movecomp.Velocity - subvelocity;
+
+                                float vx;
+                                float vy;
+                                float vz;
+
+                                if (blockPlane.normal.X != 0 && (movecomp.Velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 || movecomp.Velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
+                                    vx = subvelocity.X;
+                                else
+                                    vx = movecomp.Velocity.X;
+
+                                if (blockPlane.normal.Y != 0 && (movecomp.Velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 || movecomp.Velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
+                                    vy = subvelocity.Y;
+                                else
+                                    vy = movecomp.Velocity.Y;
+
+                                if (blockPlane.normal.Z != 0 && (movecomp.Velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 || movecomp.Velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
+                                    vz = subvelocity.Z;
+                                else
+                                    vz = movecomp.Velocity.Z;
+
+                                if (Math.Abs(vx) < 0.01f)
+                                    vx = 0;
+                                if (Math.Abs(vy) < 0.01f)
+                                    vy = 0;
+                                if (Math.Abs(vz) < 0.01f)
+                                    vz = 0;
+
+                                movecomp.Velocity = new Vector3(vx, vy, vz);
+
+                                if (vx == 0 && vy == 0 && vz == 0)
+                                {
+                                    abort = true;
+                                    break;
+                                }
                             }
                         }
                     }

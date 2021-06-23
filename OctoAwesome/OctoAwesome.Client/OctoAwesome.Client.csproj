@@ -20,33 +20,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Components\buttonLong_brown_disabled.png" />
+    <None Remove="Assets\Crew\base.png" />
+    <None Remove="Assets\Crew\blackorca.png" />
+    <None Remove="Assets\Crew\bobstriker.png" />
+    <None Remove="Assets\Crew\crew.xml" />
+    <None Remove="Assets\Crew\manuelhu.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Components\buttonLong_brown_disabled.png" />
     <EngeniousContentReference Include="Content\Content.ecp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Components\background.png" />
-    <EmbeddedResource Include="Assets\Components\background_new.png" />
-    <EmbeddedResource Include="Assets\Crew\crew.xml" />
-    <EmbeddedResource Include="Assets\Controls\compass.png" />
-    <EmbeddedResource Include="Assets\FallbackTexture.png" />
-    <EmbeddedResource Include="Assets\Controls\octocross.png" />
-    <EmbeddedResource Include="Assets\Components\panel.png" />
-    <EmbeddedResource Include="Assets\Components\sun.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_beige.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_beige_pressed.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_brown.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_brown_pressed.png" />
-    <EmbeddedResource Include="Assets\Components\iconCheck_brown.png" />
-    <EmbeddedResource Include="Assets\Components\progress_background.png" />
-    <EmbeddedResource Include="Assets\Components\progress_red.png" />
-    <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
-    <EmbeddedResource Include="Assets\Crew\blackorca.png" />
-    <EmbeddedResource Include="Assets\Crew\base.png" />
-    <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
+    <Content Include="Content\simple.fx" />
+    <Content Include="Content\BoldFont.png" />
+    <Content Include="Content\GameFont.png" />
+    <Content Include="Content\HeadlineFont.png" />
+    <Content Include="Content\Hud.png" />
     <Content Include="Copyright.txt" />
     <None Include="de\LoadingScreenQuotes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -55,11 +44,18 @@
     <Content Include="octoawesome.ico" />
     <Content Include="TODO.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Crew\base.png" />
+    <EmbeddedResource Include="Assets\Crew\blackorca.png" />
+    <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
+    <EmbeddedResource Include="Assets\Crew\crew.xml" />
+    <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.24-alpha" />
-    <PackageReference Include="engenious.ContentTool" Version="0.5.0.22-alpha" />
-    <PackageReference Include="engenious.UI" Version="0.5.0.10-alpha" />
+    <PackageReference Include="engenious" Version="0.5.1.1-alpha" />
+    <PackageReference Include="engenious.ContentTool" Version="0.5.1.5-alpha" />
+    <PackageReference Include="engenious.UI" Version="0.5.1.1-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.IO" Version="4.3.0" />
@@ -68,10 +64,9 @@
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
+    <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.UI.csproj" />
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="engenious.CreatedContent.Content">

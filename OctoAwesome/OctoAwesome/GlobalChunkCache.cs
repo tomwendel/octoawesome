@@ -3,6 +3,7 @@ using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ namespace OctoAwesome
         // TODO: Früher oder später nach draußen auslagern
         private readonly Task cleanupTask;
         private readonly ILogger logger;
+        private readonly ChunkPool chunkPool;
         private readonly (Guid Id, PositionComponent Component)[] positionComponents;
         private IUpdateHub updateHub;
 
@@ -85,6 +87,8 @@ namespace OctoAwesome
             cleanupTask.Start(TaskScheduler.Default);
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
 
+            chunkPool = TypeContainer.Get<ChunkPool>();
+
             var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>().ToArray();
             positionComponents = resourceManager.GetEntityComponents<PositionComponent>(ids);
         }
@@ -105,7 +109,7 @@ namespace OctoAwesome
                 if (!cache.TryGetValue(new Index3(position, Planet.Id), out cacheItem))
                 {
 
-                    cacheItem = new CacheItem()
+                    cacheItem = new CacheItem(chunkPool)
                     {
                         Planet = Planet,
                         Index = position,
@@ -137,12 +141,13 @@ namespace OctoAwesome
 
                     foreach (var positionComponent in positionComponents)
                     {
-                        if (!(positionComponent.Component.Planet == Planet 
-                            && positionComponent.Component.Position.ChunkIndex.X == chunkIndex.X 
+                        if (!(positionComponent.Component.Planet == Planet
+                            && positionComponent.Component.Position.ChunkIndex.X == chunkIndex.X
                             && positionComponent.Component.Position.ChunkIndex.Y == chunkIndex.Y))
                             continue;
 
-                        cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(positionComponent.Component.Entity.Id));
+                        if (positionComponent.Component.Instance is Entity e)
+                            cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(e.Id));
                     }
 
                     using (updateSemaphore.Wait())
@@ -255,7 +260,7 @@ namespace OctoAwesome
                 while (newChunks.Count > 0)
                 {
                     CacheItem chunk = newChunks.Dequeue();
-                    chunk.ChunkColumn.ForEachEntity(simulation.AddEntity);
+                    chunk.ChunkColumn.ForEachEntity(simulation.Add);
                 }
 
                 //Alte Chunks aus der Siumaltion entfernen
@@ -263,7 +268,7 @@ namespace OctoAwesome
                 {
                     using (CacheItem chunk = oldChunks.Dequeue())
                     {
-                        chunk.ChunkColumn.ForEachEntity(simulation.RemoveEntity);
+                        chunk.ChunkColumn.ForEachEntity(simulation.Remove);
                     }
                 }
             }
@@ -371,7 +376,7 @@ namespace OctoAwesome
         private class CacheItem : IDisposable
         {
 
-            private static ChunkPool chunkPool;
+            private ChunkPool chunkPool;
             private IChunkColumn _chunkColumn;
             private readonly LockSemaphore internalSemaphore;
 
@@ -407,11 +412,11 @@ namespace OctoAwesome
 
             private bool disposed;
 
-            public CacheItem()
+            public CacheItem(ChunkPool chunkPool)
             {
                 internalSemaphore = new LockSemaphore(1, 1);
-                if (chunkPool == null)
-                    chunkPool = TypeContainer.Get<ChunkPool>();
+
+                this.chunkPool = chunkPool;
             }
 
             public LockSemaphore.SemaphoreLock Wait()
@@ -425,6 +430,11 @@ namespace OctoAwesome
                 disposed = true;
 
                 internalSemaphore.Dispose();
+
+                foreach (var chunk in _chunkColumn.Chunks)
+                {
+                    chunkPool.Push(chunk);
+                }
 
                 if (_chunkColumn is IDisposable disposable)
                     disposable.Dispose();

@@ -22,10 +22,10 @@ namespace OctoAwesome.Database
         public void FromBytes(byte[] array, int startIndex)
             => Tag = new Guid(array.Skip(startIndex).Take(Length).ToArray());
 
-        public override bool Equals(object obj) 
+        public override bool Equals(object obj)
             => obj is GuidTag<T> tag && Equals(tag);
 
-        public bool Equals(GuidTag<T> other) 
+        public bool Equals(GuidTag<T> other)
             => Length == other.Length && Tag.Equals(other.Tag);
 
         public override int GetHashCode()
@@ -34,6 +34,11 @@ namespace OctoAwesome.Database
             hashCode = hashCode * -1521134295 + Tag.GetHashCode();
             hashCode = hashCode * -1521134295 + Length.GetHashCode();
             return hashCode;
+        }
+
+        public void WriteBytes(Span<byte> span)
+        {
+            Tag.TryWriteBytes(span);
         }
 
         public static bool operator ==(GuidTag<T> left, GuidTag<T> right)

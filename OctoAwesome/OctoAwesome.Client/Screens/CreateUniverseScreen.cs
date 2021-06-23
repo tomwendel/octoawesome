@@ -22,7 +22,7 @@ namespace OctoAwesome.Client.Screens
 
             Padding = new Border(0, 0, 0, 0);
 
-            Title = Languages.OctoClient.CreateUniverse;
+            Title = UI.Languages.OctoClient.CreateUniverse;
 
             SetDefaultBackground();
 
@@ -51,12 +51,12 @@ namespace OctoAwesome.Client.Screens
             {
                 createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
             };
-            AddLabeledControl(grid, string.Format("{0}: ", Languages.OctoClient.Name), nameInput);
+            AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Name), nameInput);
 
             seedInput = GetTextbox();
-            AddLabeledControl(grid, string.Format("{0}: ", Languages.OctoClient.Seed), seedInput);
+            AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Seed), seedInput);
 
-            createButton = new TextButton(manager, Languages.OctoClient.Create);
+            createButton = new TextButton(manager, UI.Languages.OctoClient.Create);
             createButton.HorizontalAlignment = HorizontalAlignment.Right;
             createButton.VerticalAlignment = VerticalAlignment.Bottom;
             createButton.Visible = false;

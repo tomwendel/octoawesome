@@ -26,6 +26,10 @@ namespace OctoAwesome.Database.Tests
             }
 
             public byte[] GetBytes() => Array.Empty<byte>();
+
+            public void WriteBytes(Span<byte> span)
+            {
+            }
         }
     }
 }

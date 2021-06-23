@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Remove="Assets\Definitions\Items\axe_iron.png" />
     <None Remove="Assets\Definitions\Items\bucket.png" />
+    <None Remove="Assets\Definitions\Items\chest.png" />
     <None Remove="Assets\Definitions\Items\hammer_iron.png" />
     <None Remove="Assets\Definitions\Items\hoe_iron.png" />
     <None Remove="Assets\Definitions\Items\shovel_iron.png" />
@@ -25,11 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.24-alpha" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
+    <PackageReference Include="engenious" Version="0.5.1.1-alpha" />
+    <PackageReference Include="engenious.UI" Version="0.5.1.1-alpha" />
+    <PackageReference Include="NonSucking.Framework.Extension.Rx" Version="1.0.0-alpha.45-fa2fc8d" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Definitions\Blocks\dirt.png" />
@@ -57,6 +56,7 @@
     <EmbeddedResource Include="Assets\Definitions\Blocks\redstone.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\axe_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\bucket.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\chest.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\hammer_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\hoe_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\pick_iron.png" />
@@ -69,6 +69,9 @@
     <EmbeddedResource Include="Assets\Definitions\Items\shovel_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\sword_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\wauziegg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.UI.csproj" />
   </ItemGroup>
   
 </Project>

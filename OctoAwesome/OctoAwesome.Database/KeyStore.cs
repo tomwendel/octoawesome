@@ -63,7 +63,7 @@ namespace OctoAwesome.Database
         {
             var oldKey = keys[key.Tag];
             keys[key.Tag] = new Key<TTag>(key.Tag, key.Index, key.ValueLength, oldKey.Position);
-            writer.WriteAndFlush(key.GetBytes(), 0, Key<TTag>.KEY_SIZE, oldKey.Position);
+            key.WriteBytes(writer, oldKey.Position, true);
         }
 
         internal bool Contains(TTag tag)
@@ -75,14 +75,15 @@ namespace OctoAwesome.Database
         {
             key = new Key<TTag>(key.Tag, key.Index, key.ValueLength, writer.ToEnd());
             keys.Add(key.Tag, key);
-            writer.WriteAndFlush(key.GetBytes(), 0, Key<TTag>.KEY_SIZE);
+            key.WriteBytes(writer, writer.ToEnd(), true);
+
         }
 
         internal void Remove(TTag tag, out Key<TTag> key)
         {
             key = keys[tag];
             keys.Remove(tag);
-            writer.WriteAndFlush(Key<TTag>.Empty.GetBytes(), 0, Key<TTag>.KEY_SIZE, key.Position);
+            key.WriteBytes(writer, key.Position, true);
         }
 
         public void Dispose()

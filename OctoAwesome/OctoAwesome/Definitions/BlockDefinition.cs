@@ -54,6 +54,8 @@ namespace OctoAwesome.Definitions
         /// </summary>
         public abstract IMaterialDefinition Material { get; }
 
+        private readonly BoundingBox[] defaultCollisionBoxes = new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
         /// </summary>
@@ -62,8 +64,8 @@ namespace OctoAwesome.Definitions
         public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem item)
         {
             //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
-            var valueMined = item.Hit(Material, blockVolume.VolumeRemaining, VolumePerHit);
-            return new BlockHitInformation(valueMined != 0, valueMined, new[] { (VolumePerUnit, (IDefinition)this)});
+            var valueMined = item.Hit(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining, VolumePerHit);
+            return new BlockHitInformation(valueMined != 0, valueMined, new[] { (VolumePerUnit, (IDefinition)this) });
         }
 
         /// <summary>
@@ -75,13 +77,13 @@ namespace OctoAwesome.Definitions
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>Ein Array von Kollisionsboxen</returns>
         public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
-            => new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+            => defaultCollisionBoxes;
 
         public virtual int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
 
         public virtual int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
-        
-        public bool IsSolidWall(Wall wall) => (SolidWall& (1 << (int)wall)) != 0;
-        
+
+        public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
+
     }
 }

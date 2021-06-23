@@ -5,6 +5,9 @@ using System;
 using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
+using OctoAwesome.UI.Controls;
+using OctoAwesome.UI.Components;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -27,9 +30,15 @@ namespace OctoAwesome.Client.Screens
         private readonly MinimapControl minimap;
         private readonly CrosshairControl crosshair;
         private readonly HealthBarControl healthbar;
+        private readonly AssetComponent assets;
+        private readonly PlayerComponent playerComponent;
+        private readonly IDefinitionManager definitionManager;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
+            assets = manager.Game.Assets;
+            playerComponent = manager.Game.Player;
+            definitionManager = manager.Game.DefinitionManager;
             DefaultMouseMode = MouseMode.Captured;
 
             Manager = manager;
@@ -37,16 +46,16 @@ namespace OctoAwesome.Client.Screens
 
             scene = new SceneControl(manager);
             scene.HorizontalAlignment = HorizontalAlignment.Stretch;
-            scene.VerticalAlignment = VerticalAlignment.Stretch;            
+            scene.VerticalAlignment = VerticalAlignment.Stretch;
             Controls.Add(scene);
 
-            debug = new DebugControl(manager);
+            debug = new DebugControl(manager, assets,playerComponent, manager.Game.ResourceManager, definitionManager);
             debug.HorizontalAlignment = HorizontalAlignment.Stretch;
             debug.VerticalAlignment = VerticalAlignment.Stretch;
             debug.Visible = false;
             Controls.Add(debug);
 
-            compass = new CompassControl(manager);
+            compass = new CompassControl(manager, assets, playerComponent.CurrentEntityHead);
             compass.HorizontalAlignment = HorizontalAlignment.Center;
             compass.VerticalAlignment = VerticalAlignment.Top;
             compass.Margin = Border.All(10);
@@ -54,8 +63,8 @@ namespace OctoAwesome.Client.Screens
             compass.Height = 50;
             Controls.Add(compass);
 
-            toolbar = new ToolbarControl(manager);
-            toolbar.HorizontalAlignment = HorizontalAlignment.Stretch;
+            toolbar = new ToolbarControl(manager, assets, playerComponent, definitionManager);
+            toolbar.HorizontalAlignment = HorizontalAlignment.Center;
             toolbar.VerticalAlignment = VerticalAlignment.Bottom;
             toolbar.Height = 100;
             Controls.Add(toolbar);
@@ -78,24 +87,24 @@ namespace OctoAwesome.Client.Screens
             healthbar.Margin = Border.All(20, 30);
             Controls.Add(healthbar);
 
-            crosshair = new CrosshairControl(manager);
+            crosshair = new CrosshairControl(manager, assets);
             crosshair.HorizontalAlignment = HorizontalAlignment.Center;
             crosshair.VerticalAlignment = VerticalAlignment.Center;
             crosshair.Width = 8;
             crosshair.Height = 8;
             Controls.Add(crosshair);
 
-            Title = Languages.OctoClient.Game;
+            Title = UI.Languages.OctoClient.Game;
 
             RegisterKeyActions();
         }
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 1f);
-            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-1f, 0f);
-            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -1f);
-            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(1f, 0f);
+            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 2f);
+            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-2f, 0f);
+            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -2f);
+            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(2f, 0f);
             if (pressedHeadUp) Manager.Player.HeadInput += new Vector2(0f, 1f);
             if (pressedHeadDown) Manager.Player.HeadInput += new Vector2(0f, -1f);
             if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
@@ -166,6 +175,14 @@ namespace OctoAwesome.Client.Screens
             Manager.Player.SlotRightInput = args.Steps < 0;
             args.Handled = true;
         }
+
+        protected override void OnNavigateFrom(NavigationEventArgs args)
+        {
+            Manager.Player.ApplyInput = false;
+            Manager.Player.InteractInput = false;
+            base.OnNavigateFrom(args);
+        }
+
 
         #endregion
 

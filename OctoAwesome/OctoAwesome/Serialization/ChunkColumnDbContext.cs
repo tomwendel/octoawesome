@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Database;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace OctoAwesome.Serialization
         public override void AddOrUpdate(IChunkColumn value)
         {
             using (Database.Lock(Operation.Write))
-                Database.AddOrUpdate(new Index2Tag(value.Index), new Value(Serializer.SerializeCompressed(value)));
+                Database.AddOrUpdate(new Index2Tag(value.Index), new Value(Serializer.SerializeCompressed(value, 2048)));
         }
 
         public IChunkColumn Get(Index2 key)

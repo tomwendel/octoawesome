@@ -8,12 +8,13 @@ using engenious.Graphics;
 using System.Diagnostics;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
+using OctoAwesome.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
     internal class CrewMemberScreen : BaseScreen
     {
-        private AssetComponent assets;
+        private readonly AssetComponent assets;
 
         public CrewMemberScreen(ScreenComponent manager, CrewMember member) : base(manager)
         {
@@ -22,7 +23,7 @@ namespace OctoAwesome.Client.Screens
             VerticalAlignment = VerticalAlignment.Stretch;
             HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            Title = Languages.OctoClient.CreditsCrew + ": " + member.Username;
+            Title = UI.Languages.OctoClient.CreditsCrew + ": " + member.Username;
 
             SpriteFont boldFont = manager.Content.Load<SpriteFont>("Fonts/BoldFont");
 
@@ -31,7 +32,7 @@ namespace OctoAwesome.Client.Screens
             SetDefaultBackground();
 
             //The Panel
-            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
+            Texture2D panelBackground = assets.LoadTexture( "panel");
             Panel panel = new Panel(manager)
             {
                 MaxWidth = 750,                
@@ -94,7 +95,7 @@ namespace OctoAwesome.Client.Screens
             };
             textStack.Controls.Add(achievementStack);
 
-            Label achievementsTitle = new Label(manager) { Text = Languages.OctoClient.Achievements + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
+            Label achievementsTitle = new Label(manager) { Text = UI.Languages.OctoClient.Achievements + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
             achievementStack.Controls.Add(achievementsTitle);
             Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };            
             achievementStack.Controls.Add(achievements);
@@ -110,7 +111,7 @@ namespace OctoAwesome.Client.Screens
             };
             textStack.Controls.Add(linkStack);
 
-            Label linkTitle = new Label(manager) { Text = Languages.OctoClient.Links + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
+            Label linkTitle = new Label(manager) { Text = UI.Languages.OctoClient.Links + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
             linkStack.Controls.Add(linkTitle);
 
             foreach (var link in member.Links)

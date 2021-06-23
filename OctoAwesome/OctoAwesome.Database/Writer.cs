@@ -30,22 +30,41 @@ namespace OctoAwesome.Database
             fileStream = null;
         }
 
-        public void Write(byte[] data, int offset, int length)
-            => fileStream.Write(data, offset, length);
-        public void Write(byte[] data, int offset, int length, long position)
+        public void Write(ReadOnlySpan<byte> data)
+          => fileStream.Write(data);
+        public void Write(ReadOnlySpan<byte> data, long position)
         {
             fileStream.Seek(position, SeekOrigin.Begin);
-            Write(data, offset, length);
+            Write(data);
         }
 
-        public void WriteAndFlush(byte[] data, int offset, int length)
+        public void WriteAndFlush(ReadOnlySpan<byte> data)
         {
-            Write(data, offset, length);
+            Write(data);
             fileStream.Flush();
         }
-        public void WriteAndFlush(byte[] data, int offset, int length, long position)
+        public void WriteAndFlush(ReadOnlySpan<byte> data, long position)
         {
-            Write(data, offset, length, position);
+            Write(data, position);
+            fileStream.Flush();
+        }
+
+        public void Write(ReadOnlySpan<byte> data, int offset, int length)
+            => fileStream.Write(data[offset..(offset+length)]);
+        public void Write(ReadOnlySpan<byte> data, int offset, int length, long position)
+        {
+            fileStream.Seek(position, SeekOrigin.Begin);
+            Write(data[offset..(offset + length)]);
+        }
+
+        public void WriteAndFlush(ReadOnlySpan<byte> data, int offset, int length)
+        {
+            Write(data[offset..(offset + length)]);
+            fileStream.Flush();
+        }
+        public void WriteAndFlush(ReadOnlySpan<byte> data, int offset, int length, long position)
+        {
+            Write(data[offset..(offset + length)], position);
             fileStream.Flush();
         }
 

@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.EntityComponents
 {
     /// <summary>
     /// HeadComponent
     /// </summary>
-    public sealed class HeadComponent : EntityComponent
+    public sealed class HeadComponent : Component, IEntityComponent
     {
         /// <summary>
         /// HeadPosition

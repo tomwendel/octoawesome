@@ -43,7 +43,6 @@ namespace OctoAwesome.GameServer.Commands
             entityNotification = entityNotificationPool.Get();
             entityNotification.Entity = remotePlayer;
             entityNotification.Type = EntityNotification.ActionType.Add;
-
             updateHub.Push(entityNotification, DefaultChannels.Network);
             entityNotification.Release();
             return Serializer.Serialize(player);

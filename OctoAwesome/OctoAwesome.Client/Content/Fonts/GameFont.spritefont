@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <EngeniousFont>
   <FontName>Arial</FontName>
-  <Size>12</Size>
+  <FontType>MSDF</FontType>
+  <Size>24</Size>
   <Spacing>0</Spacing>
   <UseKerning>True</UseKerning>
   <Style>Regular</Style>

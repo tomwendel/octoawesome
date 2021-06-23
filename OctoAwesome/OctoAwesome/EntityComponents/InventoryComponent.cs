@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Definitions;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public class InventoryComponent : EntityComponent
+    public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         /// <summary>
         /// Das Inventar der Entity
@@ -94,17 +95,43 @@ namespace OctoAwesome.EntityComponents
         /// <returns>Gibt an, ob das entfernen der Einheit aus dem Inventar funktioniert hat. False, z.B. wenn nicht genügend Volumen (weniger als VolumePerUnit) übrig ist-</returns>
         public bool RemoveUnit(InventorySlot slot)
         {
-            if (!(slot.Item is IInventoryable definition))
+            if (slot.Item is not IInventoryable definition)
                 return false;
 
             if (slot.Amount >= definition.VolumePerUnit) // Wir können noch einen Block setzen
             {
                 slot.Amount -= definition.VolumePerUnit;
                 if (slot.Amount <= 0)
-                    Inventory.Remove(slot);
+                    return Inventory.Remove(slot);
                 return true;
             }
             return false;
+        }
+
+        public bool RemoveSlot(InventorySlot inventorySlot)
+        {
+            return Inventory.Remove(inventorySlot);
+        }
+
+        public void AddSlot(InventorySlot inventorySlot)
+        {
+            var slot = Inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
+               s.Amount < s.Item.VolumePerUnit * s.Item.StackLimit);
+
+            // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+            if (slot == null)
+            {
+                slot = new InventorySlot()
+                {
+                    Item = inventorySlot.Item,
+                    Amount = inventorySlot.Amount,
+                };
+                Inventory.Add(slot);
+            }
+            else
+            {
+                slot.Amount += inventorySlot.Amount;
+            }
         }
     }
 }

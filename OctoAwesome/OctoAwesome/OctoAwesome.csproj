@@ -17,8 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.24-alpha" />
-    <PackageReference Include="NLog" Version="4.7.5" />
+    <PackageReference Include="engenious" Version="0.5.1.1-alpha" />
+    <PackageReference Include="NLog" Version="4.7.7" />
+    <PackageReference Include="NonSucking.Framework.Extension.Rx" Version="1.0.0-alpha.45-fa2fc8d" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
   </ItemGroup>
 

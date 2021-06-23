@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
+using SimulationComponentRecord = OctoAwesome.Components.SimulationComponentRecord<
+                                    OctoAwesome.Entity,
+                                    OctoAwesome.Basics.EntityComponents.MoveableComponent,
+                                    OctoAwesome.EntityComponents.BodyComponent>;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(MoveableComponent), typeof(BodyComponent))]
-    public sealed class AccelerationComponent : SimulationComponent
+    public sealed class AccelerationComponent : SimulationComponent<
+        Entity,
+        AccelerationComponent.AcceleratedEntity,
+        MoveableComponent, 
+        BodyComponent>
     {
-        private readonly List<AcceleratedEntity> acceleratedEntities;
 
-        public AccelerationComponent()
+        protected override void UpdateValue(GameTime gameTime, AcceleratedEntity entity)
         {
-            acceleratedEntities = new List<AcceleratedEntity>();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            foreach (var entity in acceleratedEntities.ToArray())
-            {
                 // Convert external Forces to Powers
                 Vector3 power = ((entity.Move.ExternalForces * entity.Move.ExternalForces) / (2 * entity.Body.Mass)) * 
                     (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -60,36 +60,16 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 // Calculate Move Vector for the upcoming frame
                 entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
         }
 
-        protected override bool AddEntity(Entity entity)
-        {
-            AcceleratedEntity acceleratedEntity = new AcceleratedEntity()
-            {
-                Entity = entity,
-                Move = entity.Components.GetComponent<MoveableComponent>(),
-                Body = entity.Components.GetComponent<BodyComponent>()
-            };
+        protected override AcceleratedEntity OnAdd(Entity entity) 
+            => new AcceleratedEntity(
+                entity,
+                entity.Components.GetComponent<MoveableComponent>(),
+                entity.Components.GetComponent<BodyComponent>());
 
-            acceleratedEntities.Add(acceleratedEntity);
-            return true;
-        }
 
-        protected override void RemoveEntity(Entity entity)
-        {
-            AcceleratedEntity acceleratedEntity = acceleratedEntities.FirstOrDefault(e => e.Entity == entity);
-            if (acceleratedEntity != null)
-                acceleratedEntities.Remove(acceleratedEntity);
-        }
-
-        private class AcceleratedEntity
-        {
-            public Entity Entity { get; set; }
-
-            public MoveableComponent Move { get; set; }
-
-            public BodyComponent Body { get; set; }
-        }
+        public record AcceleratedEntity(Entity Entity, MoveableComponent Move, BodyComponent Body)
+            : SimulationComponentRecord(Entity, Move, Body);
     }
 }

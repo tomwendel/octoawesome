@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <EngeniousFont>
   <FontName>Arial</FontName>
+  <FontType>MSDF</FontType>
   <Size>16</Size>
   <Spacing>0</Spacing>
   <UseKerning>True</UseKerning>
   <Style>Bold</Style>
-  <DefaultCharacter />
+  <DefaultCharacter>&#x0;</DefaultCharacter>
   <CharacterRegions>
     <CharacterRegion>
       <Start>9</Start>

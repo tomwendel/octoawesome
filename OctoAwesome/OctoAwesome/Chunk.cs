@@ -290,6 +290,12 @@ namespace OctoAwesome
         {
             Index = position;
             Planet = planet;
+
+            for (int i = 0; i < Blocks.Length; i++)
+                Blocks[i] = 0;
+                
+            for (int i = 0; i < MetaData.Length; i++)
+                MetaData[i] = 0;
         }
 
         public void Init(IPool pool)

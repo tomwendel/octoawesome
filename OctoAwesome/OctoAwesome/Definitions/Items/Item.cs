@@ -35,7 +35,7 @@ namespace OctoAwesome.Definitions.Items
             Condition = 99;
         }
 
-        public virtual int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
+        public virtual int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             //TODO Condition Berechnung
 

@@ -17,7 +17,7 @@ namespace OctoAwesome.Client.Screens
             game = Manager.Game;
             Padding = new Border(0, 0, 0, 0);
 
-            Title = Languages.OctoClient.CreateUniverse;
+            Title = UI.Languages.OctoClient.CreateUniverse;
 
             SetDefaultBackground();
 
@@ -59,7 +59,7 @@ namespace OctoAwesome.Client.Screens
             };
             AddLabeledControl(grid, "Username:", playerNameInput);
 
-            var createButton = new TextButton(manager, Languages.OctoClient.Connect);
+            var createButton = new TextButton(manager, UI.Languages.OctoClient.Connect);
             createButton.HorizontalAlignment = HorizontalAlignment.Center;
             createButton.VerticalAlignment = VerticalAlignment.Center;
             createButton.Visible = true;

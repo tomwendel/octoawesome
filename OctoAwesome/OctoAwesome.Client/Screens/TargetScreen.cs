@@ -3,6 +3,7 @@ using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.UI.Components;
 using System;
 
 namespace OctoAwesome.Client.Screens
@@ -17,9 +18,9 @@ namespace OctoAwesome.Client.Screens
 
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.5f);
-            Title = Languages.OctoClient.SelectTarget;
+            Title = UI.Languages.OctoClient.SelectTarget;
 
-            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
+            Texture2D panelBackground = assets.LoadTexture( "panel");
             Panel panel = new Panel(manager)
             {
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
@@ -78,7 +79,7 @@ namespace OctoAwesome.Client.Screens
             };
             yStack.Controls.Add(yText);
 
-            Button closeButton = new TextButton(manager, Languages.OctoClient.Teleport);
+            Button closeButton = new TextButton(manager, UI.Languages.OctoClient.Teleport);
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             closeButton.LeftMouseClick += (s, e) =>
             {

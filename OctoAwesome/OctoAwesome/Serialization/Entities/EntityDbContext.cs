@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Database;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Database;
+using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,13 +43,13 @@ namespace OctoAwesome.Serialization.Entities
             foreach (Type component in definition.Components)
             {
                 MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(component);
-                entity.Components.AddComponent((EntityComponent)genericMethod.Invoke(componentsDbContext, new object[] { entity }));
+                entity.Components.AddComponent((IEntityComponent)genericMethod.Invoke(componentsDbContext, new object[] { entity }));
             }
 
             return entity;
         }
 
-        public IEnumerable<Entity> GetEntitiesWithComponent<T>() where T : EntityComponent
+        public IEnumerable<Entity> GetEntitiesWithComponent<T>() where T : IEntityComponent
         {
             IEnumerable<GuidTag<Entity>> entities = componentsDbContext.GetAllKeys<T>().Select(t => new GuidTag<Entity>(t.Tag));
 
@@ -55,7 +57,7 @@ namespace OctoAwesome.Serialization.Entities
                 yield return Get(entityId);
         }
 
-        public IEnumerable<GuidTag<Entity>> GetEntityIdsFromComponent<T>() where T : EntityComponent
+        public IEnumerable<GuidTag<Entity>> GetEntityIdsFromComponent<T>() where T : IEntityComponent
             => componentsDbContext.GetAllKeys<T>().Select(t => new GuidTag<Entity>(t.Tag));
 
         public IEnumerable<GuidTag<Entity>> GetAllKeys()

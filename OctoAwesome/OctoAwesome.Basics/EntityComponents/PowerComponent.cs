@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.EntityComponents
 {
-    public abstract class PowerComponent : EntityComponent
+    public abstract class PowerComponent : Component, IEntityComponent
     {
         public float Power { get; set; }
 

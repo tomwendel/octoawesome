@@ -34,12 +34,21 @@ namespace OctoAwesome.Serialization
         {
             var array = new byte[Length];
 
-            Buffer.BlockCopy(BitConverter.GetBytes(ChunkPositon.X), 0, array, 0, sizeof(int));
-            Buffer.BlockCopy(BitConverter.GetBytes(ChunkPositon.Y), 0, array, sizeof(int), sizeof(int));
-            Buffer.BlockCopy(BitConverter.GetBytes(ChunkPositon.Z), 0, array, sizeof(int) * 2, sizeof(int));
-            Buffer.BlockCopy(BitConverter.GetBytes(FlatIndex), 0, array, sizeof(int) * 3, sizeof(int));
+            const int intSize = sizeof(int);
+            BitConverter.TryWriteBytes(array[0..(intSize * 1)], ChunkPositon.X);
+            BitConverter.TryWriteBytes(array[(intSize * 1)..(intSize * 2)], ChunkPositon.Y);
+            BitConverter.TryWriteBytes(array[(intSize * 2)..(intSize * 3)], ChunkPositon.Z);
+            BitConverter.TryWriteBytes(array[(intSize * 3)..(intSize * 4)], FlatIndex);
 
             return array;
+        }
+        public void WriteBytes(Span<byte> span)
+        {
+            const int intSize = sizeof(int);
+            BitConverter.TryWriteBytes(span[0..(intSize * 1)], ChunkPositon.X);
+            BitConverter.TryWriteBytes(span[(intSize * 1)..(intSize * 2)], ChunkPositon.Y);
+            BitConverter.TryWriteBytes(span[(intSize * 2)..(intSize * 3)], ChunkPositon.Z);
+            BitConverter.TryWriteBytes(span[(intSize * 3)..(intSize * 4)], FlatIndex);
         }
 
         public override bool Equals(object obj)

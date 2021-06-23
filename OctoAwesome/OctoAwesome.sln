@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome", "OctoAwesome\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Basics", "OctoAwesome.Basics\OctoAwesome.Basics.csproj", "{739F0779-A605-49C9-A298-FE30DC628C9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Runtime", "OctoAwesome.Runtime\OctoAwesome.Runtime.csproj", "{31D774C6-E5D9-40B7-8D63-942E28FE1D94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Runtime", "OctoAwesome.Runtime\OctoAwesome.Runtime.csproj", "{31D774C6-E5D9-40B7-8D63-942E28FE1D94}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D269F5F0-2B6A-471A-8A44-253DEF5D98A1}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database", "OctoAwesome.Database\OctoAwesome.Database.csproj", "{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database.Tests", "Tests\OctoAwesome.Database.Tests\OctoAwesome.Database.Tests.csproj", "{6592E6FB-A005-45B7-A526-6598D7CF26BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.UI", "OctoAwesome.Client.UI\OctoAwesome.UI.csproj", "{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,14 @@ Global
 		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|x86.ActiveCfg = Release|Any CPU
 		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|x86.Build.0 = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|x86.Build.0 = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|x86.ActiveCfg = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

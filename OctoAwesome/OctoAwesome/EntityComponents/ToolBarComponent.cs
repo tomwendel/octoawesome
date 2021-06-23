@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Definitions.Items;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Definitions.Items;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +12,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// EntityComponent, die eine Werkzeug-Toolbar für den Apieler bereitstellt.
     /// </summary>
-    public class ToolBarComponent : EntityComponent
+    public class ToolBarComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gibt die Anzahl Tools in der Toolbar an.

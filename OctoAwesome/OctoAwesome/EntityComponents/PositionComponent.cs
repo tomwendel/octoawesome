@@ -1,7 +1,11 @@
 ﻿using engenious;
+
+using OctoAwesome.Components;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,8 +15,10 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class PositionComponent : EntityComponent
+    public sealed class PositionComponent : InstanceComponent<INotificationSubject<SerializableNotification>>, IEntityComponent, IFunctionalBlockComponent
     {
+        public new const int Size = Component.Size + sizeof(int) * 4 + sizeof(float) * 4;
+
         public Coordinate Position
         {
             get => position; set
@@ -56,6 +62,31 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.X);
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
+            writer.Write(Direction);
+        }
+        protected override void Serialize(Span<byte> writer)
+        {
+            base.Serialize(writer);
+            // Position
+            var offset = Component.Size;
+            BitConverter.TryWriteBytes(writer[offset..], Position.Planet);
+            offset += sizeof(int);
+            BitConverter.TryWriteBytes(writer[offset..], Position.GlobalBlockIndex.X);
+            offset += sizeof(int);
+            BitConverter.TryWriteBytes(writer[offset..], Position.GlobalBlockIndex.Y);
+            offset += sizeof(int);
+            BitConverter.TryWriteBytes(writer[offset..], Position.GlobalBlockIndex.Z);
+            offset += sizeof(int);
+            BitConverter.TryWriteBytes(writer[offset..], Position.BlockPosition.X);
+            offset += sizeof(float);
+            BitConverter.TryWriteBytes(writer[offset..], Position.BlockPosition.Y);
+            offset += sizeof(float);
+            BitConverter.TryWriteBytes(writer[offset..], Position.BlockPosition.Z);
+            offset += sizeof(float);
+            BitConverter.TryWriteBytes(writer[offset..], Direction);
+            offset += sizeof(float);
+
+
         }
 
         public override void Deserialize(BinaryReader reader)
@@ -70,8 +101,9 @@ namespace OctoAwesome.EntityComponents
             float posX = reader.ReadSingle();
             float posY = reader.ReadSingle();
             float posZ = reader.ReadSingle();
-
             position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+            Direction = reader.ReadSingle();
+
             TryUpdatePlanet(planet);
         }
 
@@ -91,24 +123,23 @@ namespace OctoAwesome.EntityComponents
             if (callerName == nameof(Position) && posUpdate)
             {
                 var updateNotification = propertyChangedNotificationPool.Get();
+                var arr = ArrayPool<byte>.Shared.Rent(Size);
 
                 updateNotification.Issuer = nameof(PositionComponent);
                 updateNotification.Property = callerName;
 
-                using (var stream = new MemoryStream())
-                using (var writer = new BinaryWriter(stream))
-                {
-                    Serialize(writer);
-                    updateNotification.Value = stream.ToArray();
-                }
+                Serialize(arr.AsSpan());
+                updateNotification.Value = arr;
 
-                Update(updateNotification);
+                Push(updateNotification);
+                ArrayPool<byte>.Shared.Return(arr);
+                updateNotification.Release();
             }
         }
 
-        public override void OnUpdate(SerializableNotification notification)
+        public override void OnNotification(SerializableNotification notification)
         {
-            base.OnUpdate(notification);
+            base.OnNotification(notification);
 
             if (notification is PropertyChangedNotification changedNotification)
             {

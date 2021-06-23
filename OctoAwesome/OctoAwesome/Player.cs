@@ -48,9 +48,9 @@ namespace OctoAwesome
         public override void Deserialize(BinaryReader reader)
             => base.Deserialize(reader); // Entity
 
-        public override void OnUpdate(SerializableNotification notification)
+        public override void OnNotification(SerializableNotification notification)
         {
-            base.OnUpdate(notification);
+            base.OnNotification(notification);
 
             var entityNotification = entityNotificationPool.Get();
             entityNotification.Entity = this;

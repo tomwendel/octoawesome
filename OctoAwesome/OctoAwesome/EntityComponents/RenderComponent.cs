@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Components;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public class RenderComponent : EntityComponent
+    public class RenderComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         public string Name { get; set; }
         public string ModelName { get; set; }

@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Database;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Database;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
@@ -309,7 +311,7 @@ namespace OctoAwesome.Runtime
                         awaiter.SetResult(player);
                         return awaiter;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // File.Delete(file);
                     }
@@ -319,15 +321,15 @@ namespace OctoAwesome.Runtime
             return null;
         }
 
-        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
             => new EntityDbContext(databaseProvider, universeGuid).GetEntitiesWithComponent<T>();
 
-        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
             => new EntityDbContext(databaseProvider, universeGuid).GetEntityIdsFromComponent<T>().Select(i => i.Tag);
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => new EntityDbContext(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
-        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
         {
             foreach (var entityId in entityIds)
                 yield return (entityId, new EntityComponentsDbContext(databaseProvider, universeGuid).Get<T>(entityId));

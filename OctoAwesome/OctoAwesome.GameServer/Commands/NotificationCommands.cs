@@ -15,6 +15,7 @@ namespace OctoAwesome.GameServer.Commands
     {
         private static readonly IUpdateHub updateHub;
         private static readonly IPool<EntityNotification> entityNotificationPool;
+        private static readonly IPool<FunctionalBlockNotification> functionalBlockNotificationPool;
         private static readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private static readonly IPool<BlocksChangedNotification> blocksChangedNotificationPool;
 
@@ -22,6 +23,7 @@ namespace OctoAwesome.GameServer.Commands
         {
             updateHub = TypeContainer.Get<IUpdateHub>();
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            functionalBlockNotificationPool = TypeContainer.Get<IPool<FunctionalBlockNotification>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
             blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
         }
@@ -29,7 +31,22 @@ namespace OctoAwesome.GameServer.Commands
         [Command((ushort)OfficialCommand.EntityNotification)]
         public static byte[] EntityNotification(CommandParameter parameter)
         {
+            Console.WriteLine("Incomming Entity Notification");
+
             var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, parameter.Data);
+            entityNotification.SenderId = parameter.ClientId;
+            updateHub.Push(entityNotification, DefaultChannels.Simulation);
+            updateHub.Push(entityNotification, DefaultChannels.Network);
+            entityNotification.Release();
+            return null;
+        }
+
+        [Command((ushort)OfficialCommand.FunctionalBlockNotification)]
+        public static byte[] FunctionalBlockNotification(CommandParameter parameter)
+        {
+            Console.WriteLine("Incomming Functionblock Notification");
+
+            var entityNotification = Serializer.DeserializePoolElement(functionalBlockNotificationPool, parameter.Data);
             entityNotification.SenderId = parameter.ClientId;
             updateHub.Push(entityNotification, DefaultChannels.Simulation);
             updateHub.Push(entityNotification, DefaultChannels.Network);

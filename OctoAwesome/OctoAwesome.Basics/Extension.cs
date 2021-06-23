@@ -26,6 +26,7 @@ namespace OctoAwesome.Basics
 
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {
+            typeContainer.Register<IPlanet, ComplexPlanet>();
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {                
@@ -50,7 +51,7 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
                 p.Components.AddComponent(new GravityComponent());
                 p.Components.AddComponent(new MoveableComponent());
-                p.Components.AddComponent(new BoxCollisionComponent());
+                p.Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
                 p.Components.AddComponent(new EntityCollisionComponent());
                 p.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
 

@@ -1,30 +1,32 @@
 ﻿using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using engenious;
 using engenious.Helper;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent), typeof(BodyPowerComponent))]
-    public class WattMoverComponent : SimulationComponent<ControllableComponent, BodyPowerComponent>
+    public class WattMoverComponent : SimulationComponent<
+        Entity, 
+        SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>,
+        ControllableComponent, 
+        BodyPowerComponent>
     {
-        protected override bool AddEntity(Entity entity)
+        protected override SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent> OnAdd(Entity entity)
         {
-            return true;
+            var controllable = entity.GetComponent<ControllableComponent>();
+            var bodyPower = entity.GetComponent<BodyPowerComponent>();
+            return new SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>(entity, controllable, bodyPower);
         }
 
-        protected override void RemoveEntity(Entity entity)
-        {
-        }
-
-        protected override void UpdateEntity(GameTime gameTime, Entity e, ControllableComponent controller, BodyPowerComponent powercomp)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent> value)
         {
             //Move
+
+            var e = value.Value;
+            var controller = value.Component1;
+            var powercomp = value.Component2;
 
             if (e.Components.ContainsComponent<HeadComponent>())
             {
@@ -61,7 +63,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                 if (controller.JumpTime <= 0)
                     controller.JumpActive = false;
             }
-
             
         }
     }

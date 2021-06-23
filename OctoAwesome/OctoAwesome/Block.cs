@@ -16,7 +16,7 @@ namespace OctoAwesome
         /// <param name="ray">Der Selektionsstrahl, der vom Spieler ausgeht</param>
         /// <param name="collisionAxis">Welche Achse von der Kollision betroffen ist</param>
         /// <returns>Die Entfernung zwischen der Kollision und der Kollisionsbox der Entität</returns>
-        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
+        public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
             float raylength = Player.SELECTIONRANGE * 2;
@@ -92,7 +92,7 @@ namespace OctoAwesome
         /// <param name="move">Die befegungsrichtung der Entität</param>
         /// <param name="collisionAxis">Welche Achse von der Kollision betroffen ist</param>
         /// <returns>Die Entfernung zwischen der Kollision und der Kollisionsbox der Entität</returns>
-        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
+        public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
         {
             Vector3 playerCorner = new Vector3(
                         (move.X > 0 ? player.Max.X : player.Min.X),

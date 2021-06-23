@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class LocalChunkCacheComponent : EntityComponent
+    public sealed class LocalChunkCacheComponent : Component, IEntityComponent
     {
         public ILocalChunkCache LocalChunkCache { get; set; }
 

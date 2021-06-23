@@ -29,7 +29,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             FluidBlock = fluidBlock;
         }
 
-        public override int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
+        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             if (!Definition.CanMineMaterial(material))
                 return 0;
@@ -46,7 +46,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             }
 
 
-            return base.Hit(material, volumeRemaining, volumePerHit);
+            return base.Hit(material, blockInfo, volumeRemaining, volumePerHit);
         }
     }
 }
