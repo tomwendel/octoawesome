@@ -1,9 +1,7 @@
 ﻿using engenious;
 using engenious.Graphics;
 using engenious.Helper;
-
 using OctoAwesome.EntityComponents;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,16 +76,18 @@ namespace OctoAwesome.Client.Components
                 set
                 {
                     texture = value;
-                    Ambient.Texture = (Texture2D)texture;
+                    Ambient.Texture = (Texture2D) texture;
                 }
             }
         }
+
         private struct ModelInfo
         {
             public bool render;
             public Texture2D texture;
             public Model model;
         }
+
         private GraphicsDevice graphicsDevice;
         private EntityModelEffect effect;
         public SimulationComponent Simulation { get; private set; }
@@ -120,6 +120,7 @@ namespace OctoAwesome.Client.Components
         }
 
         private int i = 0;
+
         public void Draw(GameTime gameTime, Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
             effect.CurrentTechnique = effect.Ambient;
@@ -136,15 +137,15 @@ namespace OctoAwesome.Client.Components
                     var rendercomp = entity.Components.GetComponent<RenderComponent>();
 
 
-                        if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
+                    if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
+                    {
+                        modelinfo = new ModelInfo()
                         {
-                            modelinfo = new ModelInfo()
-                            {
-                                render = true,
-                                model = Game.Content.Load<Model>(rendercomp.ModelName)!,
-                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
-                            };
-                        }
+                            render = true,
+                            model = Game.Content.Load<Model>(rendercomp.ModelName)!,
+                            texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
+                        };
+                    }
 
                     if (!modelinfo.render)
                         continue;
@@ -158,79 +159,85 @@ namespace OctoAwesome.Client.Components
                         head = entity.Components.GetComponent<HeadComponent>();
 
                     Index3 shift = chunkOffset.ShortestDistanceXY(
-                   position.ChunkIndex, planetSize);
+                        position.ChunkIndex, planetSize);
 
-                    var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+                    var rotation =
+                        MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
 
-                        Matrix world = Matrix.CreateTranslation(
-                            shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
-                            shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
-                        effect.World = world;
-                        effect.Texture = modelinfo.texture;
-                        modelinfo.model.Transform = world;
+                    Matrix world = Matrix.CreateTranslation(
+                                       shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                                       shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                                       shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) *
+                                   Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) *
+                                   Matrix.CreateRotationZ(rotation);
+                    effect.World = world;
+                    effect.Texture = modelinfo.texture;
+                    modelinfo.model.Transform = world;
 
-                        modelinfo.model.Draw(effect);
-                    }
-
-                    foreach (var functionalBlock in FunctionalBlocks)
-                    {
-                        if (!functionalBlock.Components.ContainsComponent<RenderComponent>())
-                        {
-                            continue;
-                        }
-
-                        var rendercomp = functionalBlock.Components.GetComponent<RenderComponent>();
-
-
-                        if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
-                        {
-                            modelinfo = new ModelInfo()
-                            {
-                                render = true,
-                                model = Game.Content.Load<Model>(rendercomp.ModelName)!,
-                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
-                            };
-                        }
-
-                        if (!modelinfo.render)
-                            continue;
-
-                        var positioncomp = functionalBlock.Components.GetComponent<PositionComponent>();
-                        var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
-                        var position = positioncomp.Position;
-                        var body = functionalBlock.Components.GetComponent<BodyComponent>();
-
-                        HeadComponent head = new HeadComponent();
-                        if (functionalBlock.Components.ContainsComponent<HeadComponent>())
-                            head = functionalBlock.Components.GetComponent<HeadComponent>();
-
-                        Index3 shift = chunkOffset.ShortestDistanceXY(
-                       position.ChunkIndex, planetSize);
-
-                        var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
-
-                        Matrix world = Matrix.CreateTranslation(
-                            shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
-                            shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z - 0.5f) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
-                        effect.World = world;
-                        effect.Texture = modelinfo.texture;
-                        modelinfo.model.Transform = world;
-                        modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
-                        if (animationcomp is not null)
-                        {
-                            animationcomp.MaxTime = modelinfo.model.CurrentAnimation?.MaxTime ?? 0f;
-                            animationcomp.Update(gameTime, modelinfo.model);
-                        }
-                        //modelinfo.model.CurrentAnimation.MaxTime
-                        //modelinfo.model.UpdateAnimation((float)(gameTime.TotalGameTime.TotalMilliseconds / 20));
-                        //modelinfo.model.CurrentAnimation?.Update(DateTime.Now.Second);
-                        modelinfo.model.Draw(effect);
-                    }
+                    modelinfo.model.Draw(effect);
                 }
+
+            foreach (var functionalBlock in FunctionalBlocks)
+            {
+                if (!functionalBlock.Components.ContainsComponent<RenderComponent>())
+                {
+                    continue;
+                }
+
+                var rendercomp = functionalBlock.Components.GetComponent<RenderComponent>();
+
+
+                if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
+                {
+                    modelinfo = new ModelInfo()
+                    {
+                        render = true,
+                        model = Game.Content.Load<Model>(rendercomp.ModelName)!,
+                        texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
+                    };
+                }
+
+                if (!modelinfo.render)
+                    continue;
+
+                var positioncomp = functionalBlock.Components.GetComponent<PositionComponent>();
+                var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
+                var position = positioncomp.Position;
+                var body = functionalBlock.Components.GetComponent<BodyComponent>();
+
+                HeadComponent head = new HeadComponent();
+                if (functionalBlock.Components.ContainsComponent<HeadComponent>())
+                    head = functionalBlock.Components.GetComponent<HeadComponent>();
+
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    position.ChunkIndex, planetSize);
+
+                var rotation =
+                    MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+
+                Matrix world = Matrix.CreateTranslation(
+                                   shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                                   shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                                   shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z - 0.5f) *
+                               Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) *
+                               Matrix.CreateRotationZ(rotation);
+                effect.World = world;
+                effect.Texture = modelinfo.texture;
+                modelinfo.model.Transform = world;
+                modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
+                if (animationcomp is not null)
+                {
+                    animationcomp.MaxTime = modelinfo.model.CurrentAnimation?.MaxTime ?? 0f;
+                    animationcomp.Update(gameTime, modelinfo.model);
+                }
+
+                //modelinfo.model.CurrentAnimation.MaxTime
+                //modelinfo.model.UpdateAnimation((float)(gameTime.TotalGameTime.TotalMilliseconds / 20));
+                //modelinfo.model.CurrentAnimation?.Update(DateTime.Now.Second);
+                modelinfo.model.Draw(effect);
+            }
         }
-        
+
         public void DrawShadow(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
             effect.CurrentTechnique = effect.Shadow;
@@ -269,20 +276,24 @@ namespace OctoAwesome.Client.Components
                         head = entity.Components.GetComponent<HeadComponent>();
 
                     Index3 shift = chunkOffset.ShortestDistanceXY(
-                   position.ChunkIndex, planetSize);
+                        position.ChunkIndex, planetSize);
 
-                    var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+                    var rotation =
+                        MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
 
                     Matrix world = Matrix.CreateTranslation(
-                        shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
-                        shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
+                                       shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                                       shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                                       shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) *
+                                   Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) *
+                                   Matrix.CreateRotationZ(rotation);
                     effect.Shadow.World = world;
                     modelinfo.model.Transform = world;
 
-                    modelinfo.model.Draw(effect, modelinfo.texture);
+                    modelinfo.model.Draw(effect);
                 }
         }
+
         public override void Update(GameTime gameTime)
         {
             if (Simulation?.Simulation == null)
@@ -299,6 +310,7 @@ namespace OctoAwesome.Client.Components
                 if (item.Components.ContainsComponent<PositionComponent>())
                     Entities.Add(item);
             }
+
             FunctionalBlocks.Clear();
             foreach (var item in simulation.FunctionalBlocks)
             {

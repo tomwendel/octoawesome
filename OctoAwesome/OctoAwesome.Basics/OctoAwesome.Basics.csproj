@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.1.1-alpha" />
+    <PackageReference Include="engenious" Version="0.5.1.4-alpha" />
     <PackageReference Include="engenious.UI" Version="0.5.1.1-alpha" />
     <PackageReference Include="NonSucking.Framework.Extension.Rx" Version="1.0.0-alpha.45-fa2fc8d" />
   </ItemGroup>

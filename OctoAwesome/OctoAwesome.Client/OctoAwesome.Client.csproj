@@ -31,7 +31,6 @@
     <EngeniousContentReference Include="Content\Content.ecp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
     <Content Include="Content\GameFont.png" />
     <Content Include="Content\HeadlineFont.png" />
@@ -53,8 +52,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.1.1-alpha" />
-    <PackageReference Include="engenious.ContentTool" Version="0.5.1.5-alpha" />
+    <PackageReference Include="engenious" Version="0.5.1.4-alpha" />
+    <PackageReference Include="engenious.ContentTool" Version="0.5.1.8-alpha" />
     <PackageReference Include="engenious.UI" Version="0.5.1.1-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

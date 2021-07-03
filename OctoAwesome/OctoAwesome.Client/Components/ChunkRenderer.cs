@@ -50,7 +50,7 @@ namespace OctoAwesome.Client.Components
 
         public bool CanRender => VertexBuffer != null && VertexCount > 0;
 
-        public int VertexCount => (int)VertexBuffer.VertexCount;
+        public int VertexCount => (int)VertexBuffer?.VertexCount;
         private int indexCount => VertexCount / 4 * 6;
         private ILocalChunkCache _manager;
         private Index3 _shift;
@@ -333,7 +333,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         {
-                            GenerateVertices(chunk, chunks, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
                         }
                     }
                 }
@@ -344,7 +344,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         {
-                            GenerateVertices(chunk, chunks, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
 
                         }
                     }
@@ -356,7 +356,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = Chunk.CHUNKSIZE_X - 1; x >= 0; x -= Chunk.CHUNKSIZE.X - 1)
                         {
-                            GenerateVertices(chunk, chunks, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
                         }
                     }
                 }
@@ -367,7 +367,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = 1; x < Chunk.CHUNKSIZE_X - 1; x++)
                         {
-                            GenerateVertices(chunk, chunks, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
                         }
                     }
                 }

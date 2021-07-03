@@ -123,7 +123,7 @@ namespace OctoAwesome.Client.Controls
             sphereRadius = tmpSphereRadius - (chunkDiag / 2);
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
-            simpleShader = manager.Game.Content.Load<chunkEffect>("simple");
+            simpleShader = manager.Game.Content.Load<chunkEffect>("Shaders/chunkEffect");
             sunTexture = assets.LoadTexture( "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
@@ -673,9 +673,9 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
-            DrawSun(sunDirection);
+            DrawSun(gameTime, chunkOffset, sunDirection);
 
-            DrawWorld(camera.Projection, camera.View, chunkOffset, sunDirection);
+            DrawWorld(gameTime, camera.Projection, camera.View, chunkOffset, sunDirection);
 
             DrawSelectionBox(chunkOffset);
 
@@ -722,7 +722,7 @@ namespace OctoAwesome.Client.Controls
             }
         }
         private int count = 0;
-        private void DrawWorld(Matrix projection, Matrix view, Index3 chunkOffset, Vector3 sunDirection)
+        private void DrawWorld(GameTime gameTime, Matrix projection, Matrix view, Index3 chunkOffset, Vector3 sunDirection)
         {
             if (count < 1)
             {
@@ -742,7 +742,7 @@ namespace OctoAwesome.Client.Controls
             DrawChunks(chunkOffset, viewProjC, cropMatrix);
             
             entities.SetLightEnvironment(sunDirection);
-            entities.Draw(view, projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
+            entities.Draw(gameTime, view, projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
         }
         private void DrawWorldShadow(Matrix projection, Matrix view, Index3 chunkOffset)
         {
@@ -755,7 +755,7 @@ namespace OctoAwesome.Client.Controls
             entities.DrawShadow(cropMatrix, Matrix.Identity, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
         }
 
-        private void DrawSun(Vector3 sunDirection)
+        private void DrawSun(GameTime gameTime, Index3 chunkOffset, Vector3 sunDirection)
         {
             // Draw Sun
         
@@ -837,7 +837,7 @@ namespace OctoAwesome.Client.Controls
 
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || renderer.VertexCount == 0)
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || !renderer.CanRender || renderer.VertexCount == 0)
                     continue;
 
                 Index3 shift = renderer.GetShift(chunkOffset, planet);
